@@ -1,25 +1,70 @@
-import logo from './logo.svg';
+import React from 'react';
+import { createBrowserRouter, RouterProvider} from 'react-router-dom';
+
+//react pages
+import Root from './root';
+import Login from './users/pages/login';
+import Signup from './users/pages/signup';
+//custom CSS file
 import './App.css';
+import { Password } from '@mui/icons-material';
+import axios from 'axios';
+
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+  //allow users to LogIn the System
+ const logInAction = async(email,password) =>{
+    await axios.post('http://localhost:3000/api/users/login',{
+      email,
+      password
+    })
+    .then(function(response){
+        console.log(response.data);
+      })
+    .catch(function (error) {
+        console.log(error);
+      });
+  
+ };
+
+ //Allow users to register on the system
+ const signUpAction = async(studentNB,email,password) => {
+  await axios.post('http://localhost:3000/api/users/signup',{
+    studentNB,
+    email,
+    password
+  })
+  .then(function(response){
+        console.log(response.data);
+      })
+  .catch(function (error) {
+        console.log(error);
+      });
+
+ };
+
+
+  const myRouter = createBrowserRouter([
+    {
+      path:'/',
+      element: <Root />,
+      children:[
+        {
+          index:true,
+          element: <Login onLogIn={logInAction}/>,
+          // element: <Signup onSignUp={signUpAction}/>,
+        },
+        {
+          path:'/register',
+          element: <Signup onSignUp={signUpAction}/>,
+        },
+      ],
+    }
+  ]);
+
+  return(<RouterProvider router={myRouter} />);
+
 }
 
 export default App;
