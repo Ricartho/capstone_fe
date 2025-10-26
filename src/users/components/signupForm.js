@@ -3,23 +3,23 @@ import { useNavigate } from "react-router-dom";
 
 import { Box,Button,Card,CardContent,InputBase,Typography } from "@mui/material";
 
-const labelStyle = {
-    color: "#ffffff",
-    backgroundColor: "#fae632",
-    fontWeight:"bold",
-    fontStyle:"normal",
-    marginBottom: '5%'
-};
+    const labelStyle = {
+        color: "#ffffff",
+        backgroundColor: "#fae632",
+        fontWeight:"bold",
+        fontStyle:"normal",
+        marginBottom: '5%'
+    };
 
-const linkStyle = {
-    color:"#fae632",
-     textDecoration: "none",
-};
+    const linkStyle = {
+        color:"#fae632",
+        textDecoration: "none",
+    };
 
 
-const SignupForm = ({onSignUp}) => {
+    const SignupForm = ({onSignUp}) => {
 
- const navigate = useNavigate();
+    const navigate = useNavigate();
 
     const [studentNB,setStudentNB] = useState('');
     const [email,setEmail] = useState('');
@@ -35,11 +35,23 @@ const SignupForm = ({onSignUp}) => {
     }
     return(
         <Box sx={{
-            width:'50%',
+            width:'80%',
+            height:'80%',
             margin:'0 auto',
-            // marginTop:'10%'
+            display:'flex',
+            justifyContent:'center',
+            alignItems:'center',
+            marginTop:'5%',
+            // border: '1px solid white',
         }}>
-            <Card square={false} variant="outlined" elevation={2} sx={{backgroundColor:"#0c0d0d",}}>
+            <Card 
+                square={false} 
+                variant="outlined" 
+                elevation={2} 
+                sx={{
+                    backgroundColor:"#0c0d0d",
+                    width:'100%'
+                }}>
               
                 <CardContent>
                     <Typography variant="h3" style={labelStyle}> Register</Typography>

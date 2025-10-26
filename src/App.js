@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider} from 'react-router-dom';
 import Root from './root';
 import Login from './users/pages/login';
 import Signup from './users/pages/signup';
+import EventPage from './events/pages/eventPage';
 //custom CSS file
 import './App.css';
 import { Password } from '@mui/icons-material';
@@ -50,13 +51,17 @@ function App() {
       path:'/',
       element: <Root />,
       children:[
+        // {
+        //   index: true,
+        //   element: <EventPage />
+        // }
+        // {
+        //   index:true,
+        //   element: <Login onLogIn={logInAction}/>,
+        // },
         {
           index:true,
-          element: <Login onLogIn={logInAction}/>,
-          // element: <Signup onSignUp={signUpAction}/>,
-        },
-        {
-          path:'/register',
+          // path:'/register',
           element: <Signup onSignUp={signUpAction}/>,
         },
       ],

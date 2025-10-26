@@ -10,10 +10,16 @@ function Root(){
             overflowX:'hidden',
             overflowY:'hidden',
             backgroundColor:'#0c0d0d',
-            position:'relative'
+          
         }}>
-            <Box sx={{marginTop:'3%'}}>
+            <Box sx={{
+                height:'100vh',
+                margin:'1%',
+                width:'100%',
+                // border:'1px solid red',
+              }}>
                 <Outlet />
+
             </Box>
         </Box>
     );
