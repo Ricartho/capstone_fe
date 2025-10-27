@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Typography, TextField, Button, Alert, Fade } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import KSUBanner from "../assets/ksubanner2.jpg";
@@ -6,20 +6,35 @@ import KSUBanner from "../assets/ksubanner2.jpg";
 export default function SignUp() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
   const [fadeIn, setFadeIn] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const timer = setTimeout(() => setFadeIn(true), 150);
     return () => clearTimeout(timer);
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (email.trim()) {
-      setSubmitted(true);
-      setEmail("");
+    setError("");
+
+    if (!email.trim() || !password.trim() || !confirmPassword.trim()) {
+      setError("All fields are required.");
+      return;
     }
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    setSubmitted(true);
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
   };
 
   return (
@@ -74,7 +89,7 @@ export default function SignUp() {
               textShadow: "0 3px 10px rgba(0,0,0,0.7)",
             }}
           >
-            SIGN UP
+            CREATE ACCOUNT
           </Typography>
         </Box>
       </Fade>
@@ -128,6 +143,46 @@ export default function SignUp() {
             }}
           />
 
+          <TextField
+            fullWidth
+            type="password"
+            label="Password"
+            variant="standard"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            sx={{
+              mb: 3,
+              input: { color: "white" },
+              label: { color: "#bbb" },
+              "& .MuiInput-underline:before": { borderBottomColor: "#444" },
+              "& .MuiInput-underline:hover:before": {
+                borderBottomColor: "#777",
+              },
+              "& .MuiInput-underline:after": { borderBottomColor: "#FFC629" },
+            }}
+          />
+
+          <TextField
+            fullWidth
+            type="password"
+            label="Confirm Password"
+            variant="standard"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+            sx={{
+              mb: 4,
+              input: { color: "white" },
+              label: { color: "#bbb" },
+              "& .MuiInput-underline:before": { borderBottomColor: "#444" },
+              "& .MuiInput-underline:hover:before": {
+                borderBottomColor: "#777",
+              },
+              "& .MuiInput-underline:after": { borderBottomColor: "#FFC629" },
+            }}
+          />
+
           <Button
             type="submit"
             variant="contained"
@@ -141,8 +196,14 @@ export default function SignUp() {
               "&:hover": { backgroundColor: "#e6b400" },
             }}
           >
-            Send Verification Link
+            Create Account
           </Button>
+
+          {error && (
+            <Alert severity="error" sx={{ mt: 3, backgroundColor: "#2a0000", color: "#ff8080" }}>
+              {error}
+            </Alert>
+          )}
 
           {submitted && (
             <Alert
@@ -154,7 +215,7 @@ export default function SignUp() {
                 fontWeight: "bold",
               }}
             >
-              A verification link has been sent to your KSU email.
+              Account created successfully! Please return to log in.
             </Alert>
           )}
 
