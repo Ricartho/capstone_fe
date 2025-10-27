@@ -24,6 +24,41 @@ export default function EventsPage() {
       time: "11:00 AM – 2:00 PM",
       location: "Student Center",
     },
+    {
+      id: 2,
+      title: "Welcome Fair",
+      date: "Sept 10, 2025",
+      time: "11:00 AM – 2:00 PM",
+      location: "Student Center",
+    },
+    {
+      id: 3,
+      title: "Welcome Fair",
+      date: "Sept 10, 2025",
+      time: "11:00 AM – 2:00 PM",
+      location: "Student Center",
+    },
+    {
+      id: 4,
+      title: "Welcome Fair",
+      date: "Sept 10, 2025",
+      time: "11:00 AM – 2:00 PM",
+      location: "Student Center",
+    },
+    {
+      id: 5,
+      title: "Welcome Fair",
+      date: "Sept 10, 2025",
+      time: "11:00 AM – 2:00 PM",
+      location: "Student Center",
+    },
+    {
+      id: 6,
+      title: "Welcome Fair",
+      date: "Sept 10, 2025",
+      time: "11:00 AM – 2:00 PM",
+      location: "Student Center",
+    },
   ];
 
   return (
