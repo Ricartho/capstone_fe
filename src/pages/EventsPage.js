@@ -1,37 +1,30 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
   Box,
   Typography,
-  TextField,
   Card,
   CardContent,
   IconButton,
   useMediaQuery,
-  CircularProgress,
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { getEvents } from "../services/api"; 
+import { useNavigate } from "react-router-dom";
+import KSUBanner from "../assets/ksubanner2.jpg";
 
 export default function EventsPage() {
-  const [search, setSearch] = useState("");
-  const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width:600px)");
 
-  useEffect(() => {
-    const loadEvents = async () => {
-      setLoading(true);
-      const data = await getEvents();
-      setEvents(data || []);
-      setLoading(false);
-    };
-    loadEvents();
-  }, []);
-
-  const filteredEvents = events.filter((event) =>
-    event.title.toLowerCase().includes(search.toLowerCase())
-  );
+  const events = [
+    {
+      id: 1,
+      title: "Welcome Fair",
+      date: "Sept 10, 2025",
+      time: "11:00 AM – 2:00 PM",
+      location: "Student Center",
+    },
+  ];
 
   return (
     <Box
@@ -42,10 +35,9 @@ export default function EventsPage() {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        overflowX: "hidden",
       }}
     >
-      {/* ===== HEADER BAR ===== */}
+      {/* =====  Header Bar ===== */}
       <Box
         sx={{
           width: "100%",
@@ -53,126 +45,113 @@ export default function EventsPage() {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          padding: isMobile ? "8px 15px" : "12px 25px",
-          boxShadow: "0 4px 6px rgba(0,0,0,0.2)",
+          padding: isMobile ? "4px 12px" : "6px 20px", 
+          height: isMobile ? "44px" : "52px", 
+          boxShadow: "0 3px 5px rgba(0,0,0,0.25)",
           position: "sticky",
           top: 0,
           zIndex: 1000,
         }}
       >
-        <IconButton>
-          <HomeIcon sx={{ color: "white", fontSize: isMobile ? 24 : 28 }} />
+        <IconButton onClick={() => navigate("/")} size="small">
+          <HomeIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
         </IconButton>
-        <Typography
-          variant={isMobile ? "h6" : "h5"}
-          sx={{ fontWeight: "bold", color: "white", letterSpacing: "1px" }}
-        >
-          EVENTS
-        </Typography>
-        <IconButton>
-          <AccountCircleIcon sx={{ color: "white", fontSize: isMobile ? 24 : 28 }} />
+
+        <IconButton onClick={() => navigate("/signup")} size="small">
+          <AccountCircleIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
         </IconButton>
       </Box>
 
-      {/* ===== BANNER IMAGE ===== */}
+      {/* ===== Banner ===== */}
       <Box sx={{ position: "relative", width: "100%" }}>
         <Box
           component="img"
-          src={require("../assets/ksubanner1.jpg")}
+          src={KSUBanner}
           alt="KSU Banner"
           sx={{
             width: "100%",
-            height: isMobile ? "150px" : "250px",
+            height: { xs: 200, sm: 250, md: 300 },
             objectFit: "cover",
-            objectPosition: "center 40%",
+            objectPosition: "center 58%",
+            display: "block",
           }}
         />
         <Box
           sx={{
             position: "absolute",
-            bottom: 0,
+            top: 0,
             left: 0,
-            right: 0,
-            height: "80px",
-            background: "linear-gradient(to bottom, rgba(0,0,0,0) 0%, black 100%)",
+            width: "100%",
+            height: "100%",
+            background:
+              "linear-gradient(to bottom, rgba(0,0,0,0.45), rgba(0,0,0,0.45))",
           }}
         />
+        <Typography
+          variant="h5"
+          sx={{
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+            color: "white",
+            fontWeight: 800,
+            letterSpacing: "0.05em",
+            textAlign: "center",
+            textShadow: "0 3px 10px rgba(0,0,0,0.7)",
+          }}
+        >
+          EVENTS
+        </Typography>
       </Box>
 
-      {/* ===== SEARCH BAR ===== */}
-      <TextField
-        placeholder="Search events..."
-        variant="outlined"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        sx={{
-          backgroundColor: "white",
-          borderRadius: "10px",
-          marginTop: "20px",
-          width: isMobile ? "85%" : "50%",
-          "& .MuiOutlinedInput-root": { borderRadius: "10px" },
-        }}
-      />
-
-      {/* ===== EVENT LIST ===== */}
+      {/* ===== Event Cards ===== */}
       <Box
         sx={{
-          width: isMobile ? "90%" : "70%",
-          marginTop: "25px",
-          marginBottom: "40px",
+          width: "100%",
+          mt: 4,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
         }}
       >
-        {loading ? (
-          // 🔄 Loading spinner while waiting for backend
-          <Box sx={{ display: "flex", justifyContent: "center", marginTop: "40px" }}>
-            <CircularProgress sx={{ color: "#FFC629" }} />
-          </Box>
-        ) : filteredEvents.length > 0 ? (
-          // ✅ Event cards
-          filteredEvents.map((event) => (
-            <Card
-              key={event.id}
-              sx={{
-                borderRadius: "20px",
-                backgroundColor: "white",
-                color: "black",
-                marginBottom: "18px",
-                textAlign: "center",
-                boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
-                transition: "transform 0.2s ease, box-shadow 0.2s ease",
-                "&:hover": {
-                  transform: "scale(1.02)",
-                  boxShadow: "0 6px 15px rgba(0,0,0,0.3)",
-                },
-              }}
-            >
-              <CardContent>
-                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                  {event.title}
-                </Typography>
-                <Typography>
-                  {event.eventDate} – {event.eventTime}
-                </Typography>
-                <Typography>{event.location}</Typography>
-              </CardContent>
-            </Card>
-          ))
-        ) : (
-          // ⚠️ If no events found
-          <Typography
+        {events.map((event) => (
+          <Card
+            key={event.id}
             sx={{
+              width: "90%",
+              maxWidth: 500,
+              backgroundColor: "#111",
               color: "white",
-              textAlign: "center",
-              marginTop: "40px",
-              fontStyle: "italic",
+              mb: 3,
+              borderRadius: "16px",
+              boxShadow: "0 4px 15px rgba(0,0,0,0.4)",
+              cursor: "pointer",
+              transition: "transform 0.2s ease",
+              "&:hover": {
+                transform: "scale(1.02)",
+                boxShadow: "0 8px 25px rgba(0,0,0,0.6)",
+              },
             }}
+            onClick={() => navigate("/event-details")}
           >
-            No events found.
-          </Typography>
-        )}
+            <CardContent sx={{ textAlign: "center" }}>
+              <Typography
+                variant="h6"
+                sx={{ color: "#FFC629", fontWeight: "bold", mb: 1 }}
+              >
+                {event.title}
+              </Typography>
+              <Typography sx={{ color: "#ddd" }}>
+                {event.date} | {event.time}
+              </Typography>
+              <Typography sx={{ mt: 0.5, color: "#aaa" }}>
+                {event.location}
+              </Typography>
+            </CardContent>
+          </Card>
+        ))}
       </Box>
     </Box>
   );
 }
-
-
