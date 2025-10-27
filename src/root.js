@@ -16,7 +16,7 @@ function Root(){
                 height:'100vh',
                 margin:'1%',
                 width:'100%',
-                // border:'1px solid red',
+                border:'1px solid red',
               }}>
                 <Outlet />
 
