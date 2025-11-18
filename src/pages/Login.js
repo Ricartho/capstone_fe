@@ -9,6 +9,8 @@ import {
   Button,
   Fade,
 } from "@mui/material";
+import axios from "axios";
+import { BASE_URL } from "../config";
 import KSUBanner from "../assets/ksubanner2.jpg";
 
 export default function Login() {
@@ -16,15 +18,31 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fadeIn, setFadeIn] = useState(false);
+  const [status, setStatus] = useState("");
 
   useEffect(() => {
     const timer = setTimeout(() => setFadeIn(true), 150);
     return () => clearTimeout(timer);
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate("/events");
+    setStatus("");
+
+    try {
+      const response = await axios.post(`${BASE_URL}/api/auth/login`, {
+        email,
+        password,
+      });
+
+      if (response.status === 200) {
+        setStatus("✔️ Login successful!");
+        setTimeout(() => navigate("/events"), 1200);
+      }
+    } catch (err) {
+      console.error("Login failed:", err);
+      setStatus("⚠️ Invalid credentials. Try again.");
+    }
   };
 
   return (
@@ -39,7 +57,6 @@ export default function Login() {
         overflowX: "hidden",
       }}
     >
-      {/* ===== Banner ===== */}
       <Fade in={fadeIn} timeout={1000}>
         <Box sx={{ position: "relative", width: "100%" }}>
           <Box
@@ -86,7 +103,6 @@ export default function Login() {
         </Box>
       </Fade>
 
-      {/* ===== Login Card ===== */}
       <Fade in={fadeIn} timeout={1600}>
         <Box
           sx={{
@@ -191,6 +207,20 @@ export default function Login() {
                 </Button>
               </form>
 
+              {/* Feedback Status */}
+              {status && (
+                <Typography
+                  sx={{
+                    mt: 2,
+                    textAlign: "center",
+                    color: status.includes("✔") ? "#FFC629" : "red",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {status}
+                </Typography>
+              )}
+
               <Typography
                 variant="body2"
                 sx={{ mt: 3, textAlign: "center", color: "#ccc" }}
@@ -207,6 +237,21 @@ export default function Login() {
                   Sign up
                 </span>
               </Typography>
+
+              <Typography
+                variant="body2"
+                sx={{
+                  mt: 2,
+                  textAlign: "center",
+                  color: "#FFC629",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  "&:hover": { color: "#e6b400" },
+                }}
+                onClick={() => navigate("/forgot-password")}
+              >
+                Forgot Password?
+              </Typography>
             </CardContent>
           </Card>
         </Box>
@@ -214,4 +259,3 @@ export default function Login() {
     </Box>
   );
 }
-

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography, TextField, Button, Alert, Fade } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { BASE_URL } from "../config";
 import KSUBanner from "../assets/ksubanner2.jpg";
 
 export default function SignUp() {
@@ -20,6 +22,7 @@ export default function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setSubmitted(false);
 
     if (!email.trim() || !password.trim() || !confirmPassword.trim()) {
       setError("All fields are required.");
@@ -31,10 +34,21 @@ export default function SignUp() {
       return;
     }
 
-    setSubmitted(true);
-    setEmail("");
-    setPassword("");
-    setConfirmPassword("");
+    try {
+      await axios.post(`${BASE_URL}/api/accounts/create`, {
+        email,
+        password,
+      });
+
+      setSubmitted(true);
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+
+      setTimeout(() => navigate("/"), 2000);
+    } catch (err) {
+      setError("Account could not be created. Try again later.");
+    }
   };
 
   return (
@@ -49,7 +63,6 @@ export default function SignUp() {
         overflowX: "hidden",
       }}
     >
-      {/* ===== Banner ===== */}
       <Fade in={fadeIn} timeout={1000}>
         <Box sx={{ position: "relative", width: "100%" }}>
           <Box
@@ -61,7 +74,6 @@ export default function SignUp() {
               height: { xs: 200, sm: 250, md: 300 },
               objectFit: "cover",
               objectPosition: "center 58%",
-              display: "block",
             }}
           />
           <Box
@@ -94,7 +106,6 @@ export default function SignUp() {
         </Box>
       </Fade>
 
-      {/* ===== Signup Box ===== */}
       <Fade in={fadeIn} timeout={1600}>
         <Box
           component="form"
@@ -136,9 +147,7 @@ export default function SignUp() {
               input: { color: "white" },
               label: { color: "#bbb" },
               "& .MuiInput-underline:before": { borderBottomColor: "#444" },
-              "& .MuiInput-underline:hover:before": {
-                borderBottomColor: "#777",
-              },
+              "& .MuiInput-underline:hover:before": { borderBottomColor: "#777" },
               "& .MuiInput-underline:after": { borderBottomColor: "#FFC629" },
             }}
           />
@@ -156,9 +165,7 @@ export default function SignUp() {
               input: { color: "white" },
               label: { color: "#bbb" },
               "& .MuiInput-underline:before": { borderBottomColor: "#444" },
-              "& .MuiInput-underline:hover:before": {
-                borderBottomColor: "#777",
-              },
+              "& .MuiInput-underline:hover:before": { borderBottomColor: "#777" },
               "& .MuiInput-underline:after": { borderBottomColor: "#FFC629" },
             }}
           />
@@ -176,9 +183,7 @@ export default function SignUp() {
               input: { color: "white" },
               label: { color: "#bbb" },
               "& .MuiInput-underline:before": { borderBottomColor: "#444" },
-              "& .MuiInput-underline:hover:before": {
-                borderBottomColor: "#777",
-              },
+              "& .MuiInput-underline:hover:before": { borderBottomColor: "#777" },
               "& .MuiInput-underline:after": { borderBottomColor: "#FFC629" },
             }}
           />
@@ -215,7 +220,7 @@ export default function SignUp() {
                 fontWeight: "bold",
               }}
             >
-              Account created successfully! Please return to log in.
+              Account created! Redirecting...
             </Alert>
           )}
 
@@ -223,11 +228,7 @@ export default function SignUp() {
             Already have an account?{" "}
             <span
               onClick={() => navigate("/")}
-              style={{
-                color: "#FFC629",
-                fontWeight: "bold",
-                cursor: "pointer",
-              }}
+              style={{ color: "#FFC629", fontWeight: "bold", cursor: "pointer" }}
             >
               Log In
             </span>

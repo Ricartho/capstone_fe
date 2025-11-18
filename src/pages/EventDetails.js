@@ -1,205 +1,176 @@
-import React from "react";
-import {
-  Box,
-  Typography,
-  Button,
-  Divider,
-  IconButton,
-  useMediaQuery,
-} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Box, Typography, Button, IconButton, Divider } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { useNavigate } from "react-router-dom";
 import KSUBanner from "../assets/ksubanner2.jpg";
+import axios from "axios";
+import { BASE_URL } from "../config";
 
 export default function EventDetails() {
   const navigate = useNavigate();
-  const isMobile = useMediaQuery("(max-width:600px)");
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const eventId = queryParams.get("id");
 
-  const event = {
-    title: "Welcome Fair",
-    date: "Sept 10, 2025",
-    time: "11:00 AM – 2:00 PM",
-    location: "Student Center",
-    description:
-      "Meet clubs, grab swag, and sign up. Stop by anytime for info on organizations and upcoming activities.",
-  };
+  const [event, setEvent] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  return (
-    <Box
-      sx={{
-        backgroundColor: "black",
-        color: "white",
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-    >
-      {/* ===== Header Bar ===== */}
+  useEffect(() => {
+    if (!eventId) return;
+
+    const fetchEvent = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/api/events/${eventId}`);
+        setEvent(response.data);
+      } catch (err) {
+        console.error("Failed to load event details:", err);
+        setEvent(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvent();
+  }, [eventId]);
+
+  if (loading) {
+    return (
       <Box
         sx={{
-          width: "100%",
+          backgroundColor: "black",
+          color: "white",
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Typography>Loading event...</Typography>
+      </Box>
+    );
+  }
+
+  if (!event) {
+    return (
+      <Box
+        sx={{
+          backgroundColor: "black",
+          color: "white",
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column",
+        }}
+      >
+        <Typography>No event data available.</Typography>
+        <Button sx={{ mt: 2, color: "#FFC629" }} onClick={() => navigate("/events")}>
+          ← Back to Events
+        </Button>
+      </Box>
+    );
+  }
+
+  return (
+    <Box sx={{ backgroundColor: "black", color: "white", minHeight: "100vh" }}>
+      <Box
+        sx={{
           backgroundColor: "#FFC629",
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
-          padding: isMobile ? "4px 12px" : "6px 20px",
-          height: isMobile ? "44px" : "52px",
-          boxShadow: "0 3px 5px rgba(0,0,0,0.25)",
-          position: "sticky",
-          top: 0,
-          zIndex: 1000,
+          justifyContent: "flex-start",
+          p: 1,
         }}
       >
-        <IconButton onClick={() => navigate("/")} size="small">
-          <HomeIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
-        </IconButton>
-
-        <IconButton onClick={() => navigate("/signup")} size="small">
-          <AccountCircleIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
+        <IconButton onClick={() => navigate("/events")} size="small">
+          <HomeIcon sx={{ color: "white" }} />
         </IconButton>
       </Box>
 
-      {/* ===== Banner ===== */}
       <Box sx={{ position: "relative", width: "100%" }}>
         <Box
           component="img"
           src={KSUBanner}
           alt="KSU Banner"
-          sx={{
-            width: "100%",
-            height: { xs: 200, sm: 250, md: 300 },
-            objectFit: "cover",
-            objectPosition: "center 58%",
-            display: "block",
-          }}
+          sx={{ width: "100%", height: 250, objectFit: "cover" }}
         />
         <Box
           sx={{
             position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            background:
-              "linear-gradient(to bottom, rgba(0,0,0,0.45), rgba(0,0,0,0.45))",
+            inset: 0,
+            background: "linear-gradient(to bottom, rgba(0,0,0,0.45), rgba(0,0,0,0.45))",
           }}
         />
         <Typography
           variant="h5"
           sx={{
             position: "absolute",
-            left: "50%",
             top: "50%",
+            left: "50%",
             transform: "translate(-50%, -50%)",
             color: "white",
             fontWeight: 800,
-            letterSpacing: "0.05em",
-            textAlign: "center",
-            textShadow: "0 3px 10px rgba(0,0,0,0.7)",
           }}
         >
           EVENT DETAILS
         </Typography>
       </Box>
 
-      {/* ===== Event Information ===== */}
-      <Box
-        sx={{
-          width: "90%",
-          maxWidth: 500,
-          mt: 4,
-          textAlign: "center",
-        }}
-      >
-        <Typography
-          variant="h5"
-          sx={{
-            color: "#FFC629",
-            fontWeight: "bold",
-            mb: 1,
-          }}
-        >
+      <Box sx={{ mt: 3, px: 3, textAlign: "center" }}>
+        <Typography variant="h5" sx={{ color: "#FFC629", fontWeight: "bold" }}>
           {event.title}
         </Typography>
+        <Divider sx={{ backgroundColor: "#FFC629", my: 2 }} />
+        <Typography>Date: {event.eventDate}</Typography>
+        <Typography>Time: {event.eventTime}</Typography>
+        <Typography>Location: {event.location}</Typography>
+        <Typography sx={{ mt: 2, color: "#ddd" }}>
+          {event.description || "No description available."}
+        </Typography>
 
-        <Divider
+        <Box
           sx={{
-            backgroundColor: "#FFC629",
-            width: "50%",
-            mx: "auto",
-            mb: 2,
-          }}
-        />
-
-        <Typography sx={{ mb: 0.5 }}>
-          <strong>Date:</strong> {event.date}
-        </Typography>
-        <Typography sx={{ mb: 0.5 }}>
-          <strong>Time:</strong> {event.time}
-        </Typography>
-        <Typography sx={{ mb: 3 }}>
-          <strong>Location:</strong> {event.location}
-        </Typography>
-
-        <Typography
-          sx={{
-            mb: 4,
-            px: 2,
-            lineHeight: 1.5,
-            color: "#ddd",
+            mt: 4,
+            display: "flex",
+            justifyContent: "center",
+            gap: 2,
+            flexWrap: "wrap",
           }}
         >
-          {event.description}
-        </Typography>
-
-        {/* ===== Buttons ===== */}
-        <Box sx={{ width: "100%", maxWidth: 350, mx: "auto" }}>
           <Button
-            fullWidth
-            variant="contained"
-            sx={{
-              mb: 2,
-              backgroundColor: "#FFC629",
-              color: "black",
-              fontWeight: "bold",
-              borderRadius: "20px",
-              "&:hover": { backgroundColor: "#e6b400" },
-            }}
-            onClick={() => alert("Attendance marked (demo only)!")}
-          >
-            Mark Attended
-          </Button>
-
-          <Button
-            fullWidth
             variant="contained"
             sx={{
               backgroundColor: "#FFC629",
               color: "black",
               fontWeight: "bold",
-              borderRadius: "20px",
+              px: 3,
               "&:hover": { backgroundColor: "#e6b400" },
             }}
-            onClick={() => alert("RSVP confirmed (demo only)!")}
+            onClick={() => alert("RSVP submitted")}
           >
             RSVP
           </Button>
 
           <Button
-            variant="text"
+            variant="contained"
             sx={{
-              mt: 2,
-              color: "#FFC629",
+              backgroundColor: "#FFC629",
+              color: "black",
               fontWeight: "bold",
+              px: 3,
+              "&:hover": { backgroundColor: "#e6b400" },
             }}
-            onClick={() => navigate("/events")}
+            onClick={() => alert("Attendance marked")}
           >
-            ← Back to Events
+            MARK ATTENDED
           </Button>
         </Box>
+
+        <Button sx={{ mt: 3, color: "#FFC629" }} onClick={() => navigate("/events")}>
+          ← Back to Events
+        </Button>
       </Box>
     </Box>
   );
 }
+

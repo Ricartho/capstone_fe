@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -9,44 +9,53 @@ import {
   useMediaQuery,
   Divider,
 } from "@mui/material";
-import HomeIcon from "@mui/icons-material/Home";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import LockIcon from "@mui/icons-material/Lock";
 import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
 import DownloadIcon from "@mui/icons-material/Download";
 
+const BASE_URL = process.env.REACT_APP_API_URL || "";
+
 export default function AdminDashboard() {
   const isMobile = useMediaQuery("(max-width:600px)");
+  const navigate = useNavigate();
 
-  // Mock event data
-  const events = [
-    {
-      id: 1,
-      title: "Welcome Fair",
-      date: "Sept 10, 2025",
-      time: "11:00 AM – 2:00 PM",
-      location: "Student Center",
-    },
-    {
-      id: 2,
-      title: "Game Night",
-      date: "Sample Date/Time",
-      location: "Sample Location",
-    },
-    {
-      id: 3,
-      title: "Career Fair",
-      date: "Sample Date/Time",
-      location: "Sample Location",
-    },
-    {
-      id: 4,
-      title: "Owl Fun Run",
-      date: "Sample Date/Time",
-      location: "Sample Location",
-    },
-  ];
+  const [events, setEvents] = useState([]);
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const res = await axios.get(`${BASE_URL}/api/events`);
+        setEvents(res.data.events || []);
+      } catch (err) {
+        console.error("Error loading events:", err);
+        setEvents([]);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  const filteredEvents = search
+    ? events.filter((e) =>
+        e.title.toLowerCase().includes(search.toLowerCase())
+      )
+    : events;
+
+  const handleEdit = (id) => {
+    navigate(`/admin/edit-event/${id}`);
+  };
+
+  const handleViewAccounts = () => {
+    navigate("/admin/view-accounts");
+  };
+
+  const handleNewEvent = () => {
+    navigate("/admin/new-event");
+  };
 
   return (
     <Box
@@ -60,38 +69,15 @@ export default function AdminDashboard() {
         overflowX: "hidden",
       }}
     >
-      {/* ===== Header Bar ===== */}
-      <Box
-        sx={{
-          width: "100%",
-          backgroundColor: "#FFC629",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: isMobile ? "8px 15px" : "12px 25px",
-          boxShadow: "0 4px 6px rgba(0,0,0,0.2)",
-          position: "sticky",
-          top: 0,
-          zIndex: 1000,
-        }}
-      >
-        <IconButton>
-          <HomeIcon sx={{ color: "white", fontSize: isMobile ? 24 : 28 }} />
-        </IconButton>
+      {/* ===== Page Title ===== */}
+      <Box sx={{ mt: 4, textAlign: "center" }}>
+        <LockIcon sx={{ fontSize: 60, color: "#FFC629" }} />
         <Typography
           variant={isMobile ? "h6" : "h5"}
-          sx={{ fontWeight: "bold", color: "white", letterSpacing: "1px" }}
+          sx={{ fontWeight: "bold", mt: 1 }}
         >
-          ADMIN
+          ADMIN DASHBOARD
         </Typography>
-        <IconButton>
-          <AccountCircleIcon sx={{ color: "white", fontSize: isMobile ? 24 : 28 }} />
-        </IconButton>
-      </Box>
-
-      {/* ===== Lock Icon ===== */}
-      <Box sx={{ mt: 4 }}>
-        <LockIcon sx={{ fontSize: 60, color: "#FFC629" }} />
       </Box>
 
       {/* ===== Search Bar ===== */}
@@ -100,6 +86,8 @@ export default function AdminDashboard() {
           fullWidth
           variant="outlined"
           placeholder="Search events..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
           InputProps={{
             sx: { backgroundColor: "#fff", borderRadius: 2 },
             startAdornment: (
@@ -123,6 +111,7 @@ export default function AdminDashboard() {
           borderRadius: "8px",
           px: 4,
         }}
+        onClick={handleNewEvent}
       >
         NEW EVENT
       </Button>
@@ -142,41 +131,51 @@ export default function AdminDashboard() {
           height: "320px",
         }}
       >
-        {events.map((event) => (
-          <Box
-            key={event.id}
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              backgroundColor: "#1a1a1a",
-              borderRadius: 3,
-              p: 2,
-              mb: 2,
-            }}
-          >
-            <Box sx={{ textAlign: "left" }}>
-              <Typography sx={{ color: "#FFC629", fontWeight: "bold" }}>
-                {event.title}
-              </Typography>
-              <Typography sx={{ color: "#ccc", fontSize: "0.9rem" }}>
-                {event.date} {event.time && `| ${event.time}`}
-              </Typography>
-              <Typography sx={{ color: "#aaa", fontSize: "0.85rem" }}>
-                {event.location}
-              </Typography>
-            </Box>
+        {filteredEvents.length > 0 ? (
+          filteredEvents.map((event) => (
+            <Box
+              key={event.id}
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                backgroundColor: "#1a1a1a",
+                borderRadius: 3,
+                p: 2,
+                mb: 2,
+              }}
+            >
+              <Box sx={{ textAlign: "left" }}>
+                <Typography sx={{ color: "#FFC629", fontWeight: "bold" }}>
+                  {event.title}
+                </Typography>
+                <Typography sx={{ color: "#ccc", fontSize: "0.9rem" }}>
+                  {event.eventDate} {event.eventTime && `| ${event.eventTime}`}
+                </Typography>
+                <Typography sx={{ color: "#aaa", fontSize: "0.85rem" }}>
+                  {event.location}
+                </Typography>
+              </Box>
 
-            <Box>
-              <IconButton sx={{ color: "#FFC629" }}>
-                <EditIcon />
-              </IconButton>
-              <IconButton sx={{ color: "#FFC629" }}>
-                <DownloadIcon />
-              </IconButton>
+              <Box>
+                <IconButton
+                  sx={{ color: "#FFC629" }}
+                  onClick={() => handleEdit(event.id)}
+                >
+                  <EditIcon />
+                </IconButton>
+
+                <IconButton sx={{ color: "#FFC629" }}>
+                  <DownloadIcon />
+                </IconButton>
+              </Box>
             </Box>
-          </Box>
-        ))}
+          ))
+        ) : (
+          <Typography sx={{ textAlign: "center", mt: 10 }}>
+            No events found.
+          </Typography>
+        )}
       </Box>
 
       {/* ===== Bottom Buttons ===== */}
@@ -214,6 +213,7 @@ export default function AdminDashboard() {
             borderRadius: "8px",
             px: 4,
           }}
+          onClick={handleViewAccounts}
         >
           VIEW ACCOUNTS
         </Button>
@@ -234,7 +234,7 @@ export default function AdminDashboard() {
           Total Events: {events.length}
         </Typography>
         <Typography variant="body1" sx={{ color: "#FFC629" }}>
-          Total Check-ins: 52
+          Total Check-ins: 
         </Typography>
       </Box>
     </Box>
