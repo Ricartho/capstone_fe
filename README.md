@@ -27,9 +27,7 @@ To learn React, check out the [React documentation](https://reactjs.org/).
    
 
 
-N.B: This repo contains the code for API (Backend logic) for our group projet, it contains no User Interface. If you need to test the endpoints you can use Postman, furter information here : https://www.postman.com/company/about-postman/
-
-
+N.B: This repo contains the code for APP User Interface (Frontend) for our group projet, it contains User Interface only without buisiness logic. Important, the Backend and Frontend are not connected yet.
 
 
 
