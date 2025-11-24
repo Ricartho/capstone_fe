@@ -16,11 +16,15 @@ Student Engagement Web Portal (UI)
 3. Copy & Paste .env-exemple file into .env file to set the mongo DB cluster ready.
 4. Run 'npm install', and wait for installtion of the necessaty packages.
 5. Run 'npm start' to launch the API.
-   
-   
-# Resources
 
-Further informations can be found on the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
+
+# Learn More
+
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+
+To learn React, check out the [React documentation](https://reactjs.org/).
+   
+   
 
 
 N.B: This repo contains the code for API (Backend logic) for our group projet, it contains no User Interface. If you need to test the endpoints you can use Postman, furter information here : https://www.postman.com/company/about-postman/
@@ -29,10 +33,6 @@ N.B: This repo contains the code for API (Backend logic) for our group projet, i
 
 
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
 
 
