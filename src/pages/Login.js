@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { loginUser } from "../services/api";
 import {
   Box,
   Card,
@@ -22,8 +23,11 @@ export default function Login() {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
+    loginUser(email,password);
+    setEmail("");
+    setPassword("");
     navigate("/events");
   };
 

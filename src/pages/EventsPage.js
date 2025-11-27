@@ -1,4 +1,5 @@
-import React from "react";
+import React,{useState,useEffect} from "react";
+import { getEvents } from "../services/api";
 import {
   Box,
   Typography,
@@ -13,8 +14,14 @@ import { useNavigate } from "react-router-dom";
 import KSUBanner from "../assets/ksubanner2.jpg";
 
 export default function EventsPage() {
+
+   //save events from DB into a state arrays
+  const [eventsD, setEventsD] = useState([]);
+
   const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width:600px)");
+
+  
 
   const events = [
     {
@@ -59,7 +66,27 @@ export default function EventsPage() {
       time: "11:00 AM – 2:00 PM",
       location: "Student Center",
     },
+     {
+      id: 7,
+      title: "Welcome Fair",
+      date: "Sept 10, 2025",
+      time: "11:00 AM – 2:00 PM",
+      location: "Student Center",
+    },
+    {
+      id: 8,
+      title: "Welcome Fair",
+      date: "Sept 10, 2025",
+      time: "11:00 AM – 2:00 PM",
+      location: "Student Center",
+    },
   ];
+  useEffect(()=>{
+    const ar = getEvents();
+  console.log(ar);
+
+
+  },[]);
 
   return (
     <Box
@@ -73,7 +100,7 @@ export default function EventsPage() {
       }}
     >
       {/* =====  Header Bar ===== */}
-      <Box
+      {/* <Box
         sx={{
           width: "100%",
           backgroundColor: "#FFC629",
@@ -95,7 +122,7 @@ export default function EventsPage() {
         <IconButton onClick={() => navigate("/signup")} size="small">
           <AccountCircleIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
         </IconButton>
-      </Box>
+      </Box> */}
 
       {/* ===== Banner ===== */}
       <Box sx={{ position: "relative", width: "100%" }}>
@@ -150,7 +177,7 @@ export default function EventsPage() {
           alignItems: "center",
         }}
       >
-        {events.map((event) => (
+        {eventsD.map((event) => (
           <Card
             key={event.id}
             sx={{
@@ -178,7 +205,7 @@ export default function EventsPage() {
                 {event.title}
               </Typography>
               <Typography sx={{ color: "#ddd" }}>
-                {event.date} | {event.time}
+                {event.eventDate} | {event.eventTime}
               </Typography>
               <Typography sx={{ mt: 0.5, color: "#aaa" }}>
                 {event.location}

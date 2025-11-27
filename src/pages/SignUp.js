@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { registerUser } from "../services/api";
 import { Box, Typography, TextField, Button, Alert, Fade } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import KSUBanner from "../assets/ksubanner2.jpg";
@@ -31,10 +32,13 @@ export default function SignUp() {
       return;
     }
 
+    registerUser(email,password);
     setSubmitted(true);
     setEmail("");
     setPassword("");
     setConfirmPassword("");
+    navigate("/events");
+    
   };
 
   return (

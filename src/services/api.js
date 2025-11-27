@@ -1,18 +1,29 @@
 import axios from "axios";
 
+
 const API = axios.create({
   baseURL: "http://localhost:3000/api", 
 });
 
-export const getEvents = async (filters = {}) => {
+// export const getEvents = async (filters = {}) => {
+//   try {
+//     const response = await API.get("/events", { params: filters });
+//     return response.data.events || [];
+//   } catch (error) {
+//     console.error("Error fetching events:", error);
+//     return [];
+//   }
+// };
+export const getEvents = async () => {
   try {
-    const response = await API.get("/events", { params: filters });
-    return response.data.events || [];
+    const response = await API.get("/events");
+    return response.data || [];
   } catch (error) {
     console.error("Error fetching events:", error);
     return [];
   }
 };
+
 
 export const addEvent = async (newEvent) => {
   try {
@@ -44,20 +55,20 @@ export const deleteEvent = async (id) => {
   }
 };
 
-export const loginUser = async (credentials) => {
+export const loginUser = async (email,password) => {
   try {
-    const response = await API.post("/auth/login", credentials);
-    return response.data;
+    const response = await API.post("/auth/login",{email,password});
+    return await response.data;
   } catch (error) {
     console.error("Login failed:", error);
     throw error;
   }
 };
 
-export const registerUser = async (userInfo) => {
+export const registerUser = async (email,password) => {
   try {
-    const response = await API.post("/auth/register", userInfo);
-    return response.data;
+    const response = await API.post("/auth/register", {email,password});
+    return await response.data;
   } catch (error) {
     console.error("Registration failed:", error);
     throw error;
