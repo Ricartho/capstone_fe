@@ -1,4 +1,6 @@
 import React from "react";
+import { useLoaderData} from "react-router-dom";
+import { format } from 'date-fns';
 import {
   Box,
   Typography,
@@ -24,18 +26,9 @@ export default function EventDetails() {
     description:
       "Meet clubs, grab swag, and sign up. Stop by anytime for info on organizations and upcoming activities.",
   };
-
+  const eventToDisplay = useLoaderData();
   return (
-    <Box
-      sx={{
-        backgroundColor: "black",
-        color: "white",
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-    >
+   <>
       {/* ===== Header Bar ===== */}
       <Box
         sx={{
@@ -108,7 +101,7 @@ export default function EventDetails() {
       <Box
         sx={{
           width: "90%",
-          maxWidth: 500,
+          maxWidth: 800,
           mt: 4,
           textAlign: "center",
         }}
@@ -121,7 +114,7 @@ export default function EventDetails() {
             mb: 1,
           }}
         >
-          {event.title}
+          {eventToDisplay.title.toUpperCase()}
         </Typography>
 
         <Divider
@@ -134,13 +127,13 @@ export default function EventDetails() {
         />
 
         <Typography sx={{ mb: 0.5 }}>
-          <strong>Date:</strong> {event.date}
+          <strong>Date:</strong> {format(new Date(eventToDisplay.eventDate),'MMM d, yyyy')}
         </Typography>
         <Typography sx={{ mb: 0.5 }}>
-          <strong>Time:</strong> {event.time}
+          <strong>Time:</strong> {eventToDisplay.eventTimeStart} - {eventToDisplay.eventTimeEnd}
         </Typography>
         <Typography sx={{ mb: 3 }}>
-          <strong>Location:</strong> {event.location}
+          <strong>Location:</strong> {eventToDisplay.location}
         </Typography>
 
         <Typography
@@ -151,7 +144,7 @@ export default function EventDetails() {
             color: "#ddd",
           }}
         >
-          {event.description}
+          {eventToDisplay.description}
         </Typography>
 
         {/* ===== Buttons ===== */}
@@ -200,6 +193,6 @@ export default function EventDetails() {
           </Button>
         </Box>
       </Box>
-    </Box>
+  </>
   );
 }

@@ -49,17 +49,7 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <Box
-      sx={{
-        backgroundColor: "black",
-        color: "white",
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        overflowX: "hidden",
-      }}
-    >
+    <>
       {/* ===== Header Bar ===== */}
       <Box
         sx={{
@@ -234,9 +224,9 @@ export default function AdminDashboard() {
           Total Events: {events.length}
         </Typography>
         <Typography variant="body1" sx={{ color: "#FFC629" }}>
-          Total Check-ins: 52
+          Total Check-ins: 52(Static)
         </Typography>
       </Box>
-    </Box>
+    </>
   );
 }

@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { registerUser } from "../services/api";
-import { Box, Typography, TextField, Button, Alert, Fade } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+
+import { Box, Typography, TextField, Button, Alert, Fade } from "@mui/material";
 import KSUBanner from "../assets/ksubanner2.jpg";
 
-export default function SignUp() {
+
+
+export default function SignUp({onSignUp}) {
+
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -13,11 +16,8 @@ export default function SignUp() {
   const [error, setError] = useState("");
   const [fadeIn, setFadeIn] = useState(false);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setFadeIn(true), 150);
-    return () => clearTimeout(timer);
-  }, []);
 
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -32,27 +32,23 @@ export default function SignUp() {
       return;
     }
 
-    registerUser(email,password);
+    
+    onSignUp(email,password);
     setSubmitted(true);
     setEmail("");
     setPassword("");
     setConfirmPassword("");
-    navigate("/events");
+    // navigate("/events");
     
   };
 
+  useEffect(() => {
+    const timer = setTimeout(() => setFadeIn(true), 150);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <Box
-      sx={{
-        backgroundColor: "black",
-        color: "white",
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        overflowX: "hidden",
-      }}
-    >
+    <>
       {/* ===== Banner ===== */}
       <Fade in={fadeIn} timeout={1000}>
         <Box sx={{ position: "relative", width: "100%" }}>
@@ -238,6 +234,6 @@ export default function SignUp() {
           </Typography>
         </Box>
       </Fade>
-    </Box>
+    </>
   );
 }

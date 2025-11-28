@@ -2,7 +2,7 @@ import axios from "axios";
 
 
 const API = axios.create({
-  baseURL: "http://localhost:3000/api", 
+  baseURL: process.env.REACT_APP_API_URL || "", 
 });
 
 // export const getEvents = async (filters = {}) => {
@@ -14,15 +14,7 @@ const API = axios.create({
 //     return [];
 //   }
 // };
-export const getEvents = async () => {
-  try {
-    const response = await API.get("/events");
-    return response.data || [];
-  } catch (error) {
-    console.error("Error fetching events:", error);
-    return [];
-  }
-};
+
 
 
 export const addEvent = async (newEvent) => {
@@ -55,23 +47,69 @@ export const deleteEvent = async (id) => {
   }
 };
 
+// export const loginUser = async (email,password) => {
+//   try {
+//     const response = await API.post("/auth/login",{email,password});
+//     return await response.data;
+//   } catch (error) {
+//     console.error("Login failed:", error);
+//     throw error;
+//   }
+// };
+
+// export const registerUser = async (email,password) => {
+//   try {
+//     const response = await API.post("/auth/register", {email,password});
+//     return await response.data;
+//   } catch (error) {
+//     console.error("Registration failed:", error);
+//     throw error;
+//   }
+// };
+
+//NEW APP CALL METHODS
+
+export const registerUser = async(email,password) => {
+    try{
+      const resp =  await API.post('/auth/register',{email,password});
+      console.log(resp.data);
+      return await resp.data;
+    }catch(err){
+    console.log(err);
+    throw new Error("This email address is already in use, please try again",{status:500});
+    } 
+   };
+
 export const loginUser = async (email,password) => {
+  try{
+    const resp =  await API.post('/auth/login',{email,password});
+    console.log(resp.data.access_token);
+    return await resp.data;
+  }catch(error){
+    console.log(error);
+    throw new Error("Login credentials incorrect, please try again",{status:500});
+  
+  }
+ };
+
+ export const getEvents = async () => {
   try {
-    const response = await API.post("/auth/login",{email,password});
-    return await response.data;
+    const response = await API.get("/events");
+    return response.data || [];
   } catch (error) {
-    console.error("Login failed:", error);
+    console.error("Error fetching events:", error);
     throw error;
   }
 };
 
-export const registerUser = async (email,password) => {
-  try {
-    const response = await API.post("/auth/register", {email,password});
-    return await response.data;
-  } catch (error) {
-    console.error("Registration failed:", error);
+export const getEvent = async (id) => {
+  try{
+    const response = await API.get(`/events/${id}`);
+    return response.data || {};
+  }catch(error){
+    console.error("Error fetching events:", error);
     throw error;
   }
 };
+
 

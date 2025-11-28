@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "../services/api";
 import {
   Box,
   Card,
@@ -9,40 +8,46 @@ import {
   TextField,
   Button,
   Fade,
+  Alert
 } from "@mui/material";
 import KSUBanner from "../assets/ksubanner2.jpg";
 
-export default function Login() {
+
+
+export default function Login({onSignIn}) {
+
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [fadeIn, setFadeIn] = useState(false);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setFadeIn(true), 150);
-    return () => clearTimeout(timer);
-  }, []);
-
+ 
   const handleSubmit = async(e) => {
+
     e.preventDefault();
-    loginUser(email,password);
+
+    setError("");
+
+    if (!email.trim() || !password.trim()) {
+      setError("All fields are required.");
+      return;
+    }
+    onSignIn(email,password);
     setEmail("");
     setPassword("");
     navigate("/events");
   };
 
+   useEffect(() => {
+    const timer = setTimeout(() => setFadeIn(true), 150);
+    return () => clearTimeout(timer);
+  }, []);
+
+
   return (
-    <Box
-      sx={{
-        backgroundColor: "black",
-        color: "white",
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        overflowX: "hidden",
-      }}
-    >
+   
+    <>
       {/* ===== Banner ===== */}
       <Fade in={fadeIn} timeout={1000}>
         <Box sx={{ position: "relative", width: "100%" }}>
@@ -194,6 +199,11 @@ export default function Login() {
                   Log In
                 </Button>
               </form>
+               {error && (
+                  <Alert severity="error" sx={{ mt: 3, backgroundColor: "#2a0000", color: "#ff8080" }}>
+                      {error}
+                  </Alert>
+                )}
 
               <Typography
                 variant="body2"
@@ -215,7 +225,8 @@ export default function Login() {
           </Card>
         </Box>
       </Fade>
-    </Box>
+      </>
+    
   );
 }
 

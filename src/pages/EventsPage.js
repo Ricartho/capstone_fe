@@ -1,6 +1,8 @@
 import React,{useState,useEffect} from "react";
+import { format } from 'date-fns';
 import { getEvents } from "../services/api";
 import {
+  Alert,
   Box,
   Typography,
   Card,
@@ -13,7 +15,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";
 import KSUBanner from "../assets/ksubanner2.jpg";
 
-export default function EventsPage() {
+export default function EventsPage({eventsList}) {
 
    //save events from DB into a state arrays
   const [eventsD, setEventsD] = useState([]);
@@ -21,14 +23,14 @@ export default function EventsPage() {
   const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width:600px)");
 
-  
+  console.log(eventsList);
 
   const events = [
     {
       id: 1,
       title: "Welcome Fair",
-      date: "Sept 10, 2025",
-      time: "11:00 AM – 2:00 PM",
+      eventDate: "Sept 10, 2025",
+      eventTime: "11:00 AM – 2:00 PM",
       location: "Student Center",
     },
     {
@@ -81,24 +83,33 @@ export default function EventsPage() {
       location: "Student Center",
     },
   ];
-  useEffect(()=>{
-    const ar = getEvents();
-  console.log(ar);
+  // useEffect(()=>{
+  //   const ar = getEvents();
+  // console.log(ar);
 
 
-  },[]);
+  // },[]);
+    const handleShow = (id) =>{
+      console.log(id); 
+      navigate(`/eventdetails/${id}`);
+    };
 
+    // if(eventsList.length ===0){
+    //   return(<>
+    //       <Alert variant="outlined" severity="error">
+    //           Ooops! Seems like there's no data to display
+    //       </Alert>
+    //   </>);
+    // }
+
+
+    // const apiDate = "2025-11-27T18:30:00.000Z";
+    // const date = new Date(apiDate);
+
+    // const formattedDate = format(new Date("2025-11-27T18:30:00.000Z"), 'MMM d, yyyy');
+    // console.log(formattedDate);
   return (
-    <Box
-      sx={{
-        backgroundColor: "black",
-        color: "white",
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-    >
+    <>
       {/* =====  Header Bar ===== */}
       {/* <Box
         sx={{
@@ -167,6 +178,8 @@ export default function EventsPage() {
         </Typography>
       </Box>
 
+      
+
       {/* ===== Event Cards ===== */}
       <Box
         sx={{
@@ -177,12 +190,12 @@ export default function EventsPage() {
           alignItems: "center",
         }}
       >
-        {eventsD.map((event) => (
+        {eventsList.map((event) => (
           <Card
-            key={event.id}
+            key={event._id}
             sx={{
               width: "90%",
-              maxWidth: 500,
+              maxWidth: 800,
               backgroundColor: "#111",
               color: "white",
               mb: 3,
@@ -195,17 +208,18 @@ export default function EventsPage() {
                 boxShadow: "0 8px 25px rgba(0,0,0,0.6)",
               },
             }}
-            onClick={() => navigate("/event-details")}
+            //onClick={() => navigate("/event-details")}
+            onClick = {() => handleShow(event._id)}
           >
             <CardContent sx={{ textAlign: "center" }}>
               <Typography
                 variant="h6"
                 sx={{ color: "#FFC629", fontWeight: "bold", mb: 1 }}
               >
-                {event.title}
+                {event.title.toUpperCase()}
               </Typography>
               <Typography sx={{ color: "#ddd" }}>
-                {event.eventDate} | {event.eventTime}
+                {format(new Date(event.eventDate), 'MMM d, yyyy')} | {event.eventTimeStart} - {event.eventTimeEnd}
               </Typography>
               <Typography sx={{ mt: 0.5, color: "#aaa" }}>
                 {event.location}
@@ -214,6 +228,6 @@ export default function EventsPage() {
           </Card>
         ))}
       </Box>
-    </Box>
+  </>
   );
 }
