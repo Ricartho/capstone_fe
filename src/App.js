@@ -5,7 +5,7 @@ import axios from 'axios';
 import { createBrowserRouter, RouterProvider} from 'react-router-dom';
 
 
-//React elements
+//React elements 45
 import { registerUser,loginUser,getEvents,getEvent} from './services/api';
 import ErrorPage from './errorPage';
 import EventsPage from "./pages/eventsPage";
