@@ -85,7 +85,7 @@ export default function AdminDashboard() {
       </Box>
 
       {/* ===== Search Bar ===== */}
-      <Box sx={{ mt: 4, width: "90%", maxWidth: 500 }}>
+      <Box sx={{ mt: 4, width: "90%", maxWidth: 700 }}>
         <TextField
           fullWidth
           variant="outlined"
@@ -122,7 +122,7 @@ export default function AdminDashboard() {
         sx={{
           mt: 4,
           width: "90%",
-          maxWidth: 700,
+          maxWidth: 900,
           flexGrow: 1,
           overflowY: "auto",
           border: "1px solid #444",
