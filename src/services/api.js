@@ -17,15 +17,15 @@ const API = axios.create({
 
 
 
-export const addEvent = async (newEvent) => {
-  try {
-    const response = await API.post("/events", newEvent);
-    return response.data;
-  } catch (error) {
-    console.error("Error adding event:", error);
-    throw error;
-  }
-};
+// export const addEvent = async (newEvent) => {
+//   try {
+//     const response = await API.post("/events", newEvent);
+//     return await response.data;
+//   } catch (error) {
+//     console.error("Error adding event:", error);
+//     throw error;
+//   }
+// };
 
 export const updateEvent = async (id, updates) => {
   try {
@@ -95,7 +95,7 @@ export const loginUser = async (email,password) => {
  export const getEvents = async () => {
   try {
     const response = await API.get("/events");
-    return response.data || [];
+    return await response.data || [];
   } catch (error) {
     console.error("Error fetching events:", error);
     throw error;
@@ -105,9 +105,19 @@ export const loginUser = async (email,password) => {
 export const getEvent = async (id) => {
   try{
     const response = await API.get(`/events/${id}`);
-    return response.data || {};
+    return await response.data || {};
   }catch(error){
     console.error("Error fetching events:", error);
+    throw error;
+  }
+};
+
+export const addEvent = async (newEvent) => {
+  try {
+    const response = await API.post("/events", newEvent);
+    return await response.data;
+  } catch (error) {
+    console.error("Error adding event:", error);
     throw error;
   }
 };

@@ -15,7 +15,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";
 import KSUBanner from "../assets/ksubanner2.jpg";
 
-export default function EventsPage({eventsList}) {
+export default function EventsPage({eventsList,loading}) {
 
    //save events from DB into a state arrays
   const [eventsD, setEventsD] = useState([]);
@@ -190,7 +190,13 @@ export default function EventsPage({eventsList}) {
           alignItems: "center",
         }}
       >
-        {eventsList.map((event) => (
+        {loading ? (
+          <Typography sx={{ color: "#aaa" }}>Loading events...</Typography>
+        ) : events.length === 0 ? (
+          <Typography sx={{ color: "#aaa" }}>
+            No events available.
+          </Typography>
+        ) : (eventsList.map((event) => (
           <Card
             key={event._id}
             sx={{
@@ -219,14 +225,14 @@ export default function EventsPage({eventsList}) {
                 {event.title.toUpperCase()}
               </Typography>
               <Typography sx={{ color: "#ddd" }}>
-                {format(new Date(event.eventDate), 'MMM d, yyyy')} | {event.eventTimeStart} - {event.eventTimeEnd}
+                {format(new Date(event.eventDate), 'MMM d, yyyy')} | {format(new Date(event.eventTimeStart), 'hh:mm:ss a')} - {format(new Date(event.eventTimeEnd), 'hh:mm:ss a')}
               </Typography>
               <Typography sx={{ mt: 0.5, color: "#aaa" }}>
                 {event.location}
               </Typography>
             </CardContent>
           </Card>
-        ))}
+        )))}
       </Box>
   </>
   );

@@ -3,17 +3,20 @@
 import React,{useState,useEffect,useCallback} from 'react';
 import axios from 'axios';
 import { createBrowserRouter, RouterProvider} from 'react-router-dom';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 
 //React elements 45
-import { registerUser,loginUser,getEvents,getEvent} from './services/api';
-import ErrorPage from './errorPage';
-import EventsPage from "./pages/eventsPage";
-import AdminDashboard from "./pages/adminDashboard";
-import Login from "./pages/login";
-import SignUp from "./pages/signUp";
-import EventDetails from "./pages/eventDetails"; 
+import { registerUser,loginUser,getEvents,getEvent,addEvent} from './services/api';
 import Root from './root';
+import ErrorPage from './errorPage';
+import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
+import EventsPage from "./pages/EventsPage";
+import EventDetails from "./pages/EventDetails"; 
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminNewEvent from './pages/AdminNewEvent';
 
 
 
@@ -21,6 +24,7 @@ import Root from './root';
  function App() {
   
     const [events,setEvents] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(()=>{
@@ -30,9 +34,14 @@ import Root from './root';
       const loadEvents = async () => {
         try{
           const data = await getEvents();
-          if (isMounted){ setEvents(data);}
+          if (isMounted){ 
+            console.log(data);
+            setEvents(data);
+          }
         }catch(err){
           if (isMounted){setError(err);}
+          }finally{
+            setLoading(false);
           }
       };
 
@@ -62,7 +71,7 @@ import Root from './root';
         },
         {
           path:'/events',
-          element: <EventsPage eventsList={events}/>,
+          element: <EventsPage eventsList={events} loading={loading}/>,
           errorElement: <ErrorPage />
         },
         {
@@ -95,8 +104,14 @@ import Root from './root';
         },
         {
           path:'/admin',
-          element: <AdminDashboard />,
+          element: <AdminDashboard eventsList={events} />,
           errorElement: <ErrorPage />
+        },
+        {
+          path:'/admin/new-event',
+          element: <AdminNewEvent onAddEvent={addEvent} />,
+          errorElement: <ErrorPage />
+
         }
        
       ],
@@ -105,8 +120,10 @@ import Root from './root';
   ]);
 
   return(
-    <RouterProvider router={myRouter } />
-  );
+     <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <RouterProvider router={myRouter } />
+      </LocalizationProvider>
+    );
 
 
   // return (

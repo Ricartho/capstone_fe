@@ -1,4 +1,5 @@
-import React from "react";
+import React,{useState}from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -9,6 +10,7 @@ import {
   useMediaQuery,
   Divider,
 } from "@mui/material";
+import { format } from 'date-fns';
 import HomeIcon from "@mui/icons-material/Home";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LockIcon from "@mui/icons-material/Lock";
@@ -16,8 +18,22 @@ import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
 import DownloadIcon from "@mui/icons-material/Download";
 
-export default function AdminDashboard() {
+export default function AdminDashboard({eventsList}) {
+  const navigate = useNavigate();
+  const [search, setSearch] = useState("");
+
   const isMobile = useMediaQuery("(max-width:600px)");
+
+  const filteredEvents = search
+    ? eventsList.filter((e) =>
+        e.title.toLowerCase().includes(search.toLowerCase())
+      )
+    : eventsList;
+
+  const handleNewEvent = () => {
+    navigate("/admin/new-event");
+  };
+
 
   // Mock event data
   const events = [
@@ -72,7 +88,7 @@ export default function AdminDashboard() {
           variant={isMobile ? "h6" : "h5"}
           sx={{ fontWeight: "bold", color: "white", letterSpacing: "1px" }}
         >
-          ADMIN
+          ADMIN DASHBOARD
         </Typography>
         <IconButton>
           <AccountCircleIcon sx={{ color: "white", fontSize: isMobile ? 24 : 28 }} />
@@ -90,6 +106,8 @@ export default function AdminDashboard() {
           fullWidth
           variant="outlined"
           placeholder="Search events..."
+          value={search}
+          onChange={(e)=>setSearch(e.target.value)}
           InputProps={{
             sx: { backgroundColor: "#fff", borderRadius: 2 },
             startAdornment: (
@@ -103,6 +121,7 @@ export default function AdminDashboard() {
 
       {/* ===== New Event Button ===== */}
       <Button
+        onClick={handleNewEvent}
         variant="contained"
         sx={{
           mt: 3,
@@ -132,9 +151,10 @@ export default function AdminDashboard() {
           height: "320px",
         }}
       >
-        {events.map((event) => (
-          <Box
-            key={event.id}
+       {filteredEvents.length > 0 ? (
+          filteredEvents.map((event) => (
+           <Box
+            key={event._id}
             sx={{
               display: "flex",
               justifyContent: "space-between",
@@ -147,10 +167,11 @@ export default function AdminDashboard() {
           >
             <Box sx={{ textAlign: "left" }}>
               <Typography sx={{ color: "#FFC629", fontWeight: "bold" }}>
-                {event.title}
+                {event.title.toUpperCase()}
               </Typography>
               <Typography sx={{ color: "#ccc", fontSize: "0.9rem" }}>
-                {event.date} {event.time && `| ${event.time}`}
+                {format(new Date(event.eventDate), 'MMM d, yyyy')} | {format(new Date(event.eventTimeStart), 'hh:mm:ss a')} - {format(new Date(event.eventTimeEnd), 'hh:mm:ss a')}
+                {/* {event.date} {event.time && `| ${event.time}`} */}
               </Typography>
               <Typography sx={{ color: "#aaa", fontSize: "0.85rem" }}>
                 {event.location}
@@ -166,7 +187,11 @@ export default function AdminDashboard() {
               </IconButton>
             </Box>
           </Box>
-        ))}
+        ))) : (
+         <Typography sx={{ textAlign: "center", mt: 10 }}>
+            No events found.
+          </Typography>
+       )}
       </Box>
 
       {/* ===== Bottom Buttons ===== */}
@@ -221,7 +246,7 @@ export default function AdminDashboard() {
         }}
       >
         <Typography variant="body1" sx={{ color: "#FFC629" }}>
-          Total Events: {events.length}
+          Total Events: {eventsList.length}
         </Typography>
         <Typography variant="body1" sx={{ color: "#FFC629" }}>
           Total Check-ins: 52(Static)
