@@ -1,6 +1,8 @@
 import React from "react";
 import { useLoaderData} from "react-router-dom";
 import { format } from 'date-fns';
+
+//MUI
 import {
   Box,
   Typography,
@@ -9,24 +11,22 @@ import {
   IconButton,
   useMediaQuery,
 } from "@mui/material";
+
 import HomeIcon from "@mui/icons-material/Home";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";
 import KSUBanner from "../assets/ksubanner2.jpg";
 
+
 export default function EventDetails() {
+
   const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width:600px)");
 
-  const event = {
-    title: "Welcome Fair",
-    date: "Sept 10, 2025",
-    time: "11:00 AM – 2:00 PM",
-    location: "Student Center",
-    description:
-      "Meet clubs, grab swag, and sign up. Stop by anytime for info on organizations and upcoming activities.",
-  };
+
+  //The event from the API, served by the loader on App.js
   const eventToDisplay = useLoaderData();
+
   return (
    <>
       {/* ===== Header Bar ===== */}
@@ -45,7 +45,7 @@ export default function EventDetails() {
           zIndex: 1000,
         }}
       >
-        <IconButton onClick={() => navigate("/")} size="small">
+        <IconButton onClick={() => navigate("/events")} size="small">
           <HomeIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
         </IconButton>
 
@@ -130,7 +130,7 @@ export default function EventDetails() {
           <strong>Date:</strong> {format(new Date(eventToDisplay.eventDate),'MMM d, yyyy')}
         </Typography>
         <Typography sx={{ mb: 0.5 }}>
-          <strong>Time:</strong> {eventToDisplay.eventTimeStart} - {eventToDisplay.eventTimeEnd}
+          <strong>Time:</strong> {format(new Date(eventToDisplay.eventTimeStart), 'hh:mm a')} - {format(new Date(eventToDisplay.eventTimeEnd), 'hh:mm a')}
         </Typography>
         <Typography sx={{ mb: 3 }}>
           <strong>Location:</strong> {eventToDisplay.location}

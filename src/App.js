@@ -1,14 +1,11 @@
-// import React from "react";
-// import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import React,{useState,useEffect,useCallback} from 'react';
-import axios from 'axios';
+import React,{useState,useEffect} from 'react';
 import { createBrowserRouter, RouterProvider} from 'react-router-dom';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 
-//React elements 45
-import { registerUser,loginUser,getEvents,getEvent,addEvent} from './services/api';
+//React components
+import { registerUser,loginUser,getEvents,getEvent,addEvent,updateEvent,deleteEvent} from './services/api';
 import Root from './root';
 import ErrorPage from './errorPage';
 import Login from "./pages/Login";
@@ -17,6 +14,7 @@ import EventsPage from "./pages/EventsPage";
 import EventDetails from "./pages/EventDetails"; 
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminNewEvent from './pages/AdminNewEvent';
+import AdminEditEvent from './pages/AdminEditEvent';
 
 
 
@@ -104,7 +102,7 @@ import AdminNewEvent from './pages/AdminNewEvent';
         },
         {
           path:'/admin',
-          element: <AdminDashboard eventsList={events} />,
+          element: <AdminDashboard eventsList={events} onDelete={deleteEvent}/>,
           errorElement: <ErrorPage />
         },
         {
@@ -112,6 +110,36 @@ import AdminNewEvent from './pages/AdminNewEvent';
           element: <AdminNewEvent onAddEvent={addEvent} />,
           errorElement: <ErrorPage />
 
+        },
+        {
+          path:'/admin/edit-event/:id',
+          element: <AdminEditEvent onEdit={updateEvent}/>,
+          loader: async({params})=>{
+
+            if(!params){
+              throw new Response("", { status: 400 });
+            }
+
+            const resp = await getEvent(params.id);
+
+            console.log(resp);
+
+            if(resp.status === 400){
+              throw new Response("", { status: 400 });
+            }
+            if(resp.status === 404){
+              throw new Response("", { status: 404 });
+            }
+            if(resp.status === 500){
+              throw new Response("", { status: 500 });
+            }
+            if(resp.status === 503){
+              throw new Response("", { status: 503 });
+            }
+
+            return resp;
+          },
+          errorElement: <ErrorPage />
         }
        
       ],

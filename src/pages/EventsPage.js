@@ -1,6 +1,8 @@
-import React,{useState,useEffect} from "react";
+import React,{useState} from "react";
 import { format } from 'date-fns';
-import { getEvents } from "../services/api";
+
+
+//MUI
 import {
   Alert,
   Box,
@@ -10,6 +12,7 @@ import {
   IconButton,
   useMediaQuery,
 } from "@mui/material";
+
 import HomeIcon from "@mui/icons-material/Home";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";
@@ -17,101 +20,22 @@ import KSUBanner from "../assets/ksubanner2.jpg";
 
 export default function EventsPage({eventsList,loading}) {
 
-   //save events from DB into a state arrays
-  const [eventsD, setEventsD] = useState([]);
+  console.log(eventsList);
 
   const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width:600px)");
 
-  console.log(eventsList);
+ 
 
-  const events = [
-    {
-      id: 1,
-      title: "Welcome Fair",
-      eventDate: "Sept 10, 2025",
-      eventTime: "11:00 AM – 2:00 PM",
-      location: "Student Center",
-    },
-    {
-      id: 2,
-      title: "Welcome Fair",
-      date: "Sept 10, 2025",
-      time: "11:00 AM – 2:00 PM",
-      location: "Student Center",
-    },
-    {
-      id: 3,
-      title: "Welcome Fair",
-      date: "Sept 10, 2025",
-      time: "11:00 AM – 2:00 PM",
-      location: "Student Center",
-    },
-    {
-      id: 4,
-      title: "Welcome Fair",
-      date: "Sept 10, 2025",
-      time: "11:00 AM – 2:00 PM",
-      location: "Student Center",
-    },
-    {
-      id: 5,
-      title: "Welcome Fair",
-      date: "Sept 10, 2025",
-      time: "11:00 AM – 2:00 PM",
-      location: "Student Center",
-    },
-    {
-      id: 6,
-      title: "Welcome Fair",
-      date: "Sept 10, 2025",
-      time: "11:00 AM – 2:00 PM",
-      location: "Student Center",
-    },
-     {
-      id: 7,
-      title: "Welcome Fair",
-      date: "Sept 10, 2025",
-      time: "11:00 AM – 2:00 PM",
-      location: "Student Center",
-    },
-    {
-      id: 8,
-      title: "Welcome Fair",
-      date: "Sept 10, 2025",
-      time: "11:00 AM – 2:00 PM",
-      location: "Student Center",
-    },
-  ];
-  // useEffect(()=>{
-  //   const ar = getEvents();
-  // console.log(ar);
-
-
-  // },[]);
-    const handleShow = (id) =>{
+  const handleShow = (id) =>{
       console.log(id); 
       navigate(`/eventdetails/${id}`);
     };
 
-    // if(eventsList.length ===0){
-    //   return(<>
-    //       <Alert variant="outlined" severity="error">
-    //           Ooops! Seems like there's no data to display
-    //       </Alert>
-    //   </>);
-    // }
-
-
-    // const apiDate = "2025-11-27T18:30:00.000Z";
-    // const date = new Date(apiDate);
-
-    // const formattedDate = format(new Date("2025-11-27T18:30:00.000Z"), 'MMM d, yyyy');
-    // console.log(formattedDate);
   return (
     <>
       {/* =====  Header Bar ===== */}
-      {/* <Box
+      <Box
         sx={{
           width: "100%",
           backgroundColor: "#FFC629",
@@ -126,14 +50,14 @@ export default function EventsPage({eventsList,loading}) {
           zIndex: 1000,
         }}
       >
-        <IconButton onClick={() => navigate("/")} size="small">
+        <IconButton onClick={() => navigate("/events")} size="small">
           <HomeIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
         </IconButton>
 
         <IconButton onClick={() => navigate("/signup")} size="small">
           <AccountCircleIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
         </IconButton>
-      </Box> */}
+      </Box>
 
       {/* ===== Banner ===== */}
       <Box sx={{ position: "relative", width: "100%" }}>
@@ -192,7 +116,7 @@ export default function EventsPage({eventsList,loading}) {
       >
         {loading ? (
           <Typography sx={{ color: "#aaa" }}>Loading events...</Typography>
-        ) : events.length === 0 ? (
+        ) : eventsList.length === 0 ? (
           <Typography sx={{ color: "#aaa" }}>
             No events available.
           </Typography>
@@ -225,7 +149,7 @@ export default function EventsPage({eventsList,loading}) {
                 {event.title.toUpperCase()}
               </Typography>
               <Typography sx={{ color: "#ddd" }}>
-                {format(new Date(event.eventDate), 'MMM d, yyyy')} | {format(new Date(event.eventTimeStart), 'hh:mm:ss a')} - {format(new Date(event.eventTimeEnd), 'hh:mm:ss a')}
+                {format(new Date(event.eventDate), 'MMM d, yyyy')} | {format(new Date(event.eventTimeStart), 'hh:mm a')} - {format(new Date(event.eventTimeEnd), 'hh:mm a')}
               </Typography>
               <Typography sx={{ mt: 0.5, color: "#aaa" }}>
                 {event.location}

@@ -1,5 +1,18 @@
 import React,{useState}from "react";
 import { useNavigate } from "react-router-dom";
+
+import { format } from 'date-fns';
+
+
+//MUI
+
+import HomeIcon from "@mui/icons-material/Home";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import LockIcon from "@mui/icons-material/Lock";
+import SearchIcon from "@mui/icons-material/Search";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from '@mui/icons-material/Delete';
+import DownloadIcon from "@mui/icons-material/Download";
 import {
   Box,
   Typography,
@@ -10,15 +23,12 @@ import {
   useMediaQuery,
   Divider,
 } from "@mui/material";
-import { format } from 'date-fns';
-import HomeIcon from "@mui/icons-material/Home";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import LockIcon from "@mui/icons-material/Lock";
-import SearchIcon from "@mui/icons-material/Search";
-import EditIcon from "@mui/icons-material/Edit";
-import DownloadIcon from "@mui/icons-material/Download";
 
-export default function AdminDashboard({eventsList}) {
+
+
+export default function AdminDashboard({eventsList,onDelete}) {
+  
+  console.log(eventsList);
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
 
@@ -34,36 +44,16 @@ export default function AdminDashboard({eventsList}) {
     navigate("/admin/new-event");
   };
 
+  const handleEdit = (id) => {
+    navigate(`/admin/edit-event/${id}`);
+  };
 
-  // Mock event data
-  const events = [
-    {
-      id: 1,
-      title: "Welcome Fair",
-      date: "Sept 10, 2025",
-      time: "11:00 AM – 2:00 PM",
-      location: "Student Center",
-    },
-    {
-      id: 2,
-      title: "Game Night",
-      date: "Sample Date/Time",
-      location: "Sample Location",
-    },
-    {
-      id: 3,
-      title: "Career Fair",
-      date: "Sample Date/Time",
-      location: "Sample Location",
-    },
-    {
-      id: 4,
-      title: "Owl Fun Run",
-      date: "Sample Date/Time",
-      location: "Sample Location",
-    },
-  ];
+  const handleDelete = (id) => {
+    onDelete(id);
+    window.location.reload();
+  };
 
+  
   return (
     <>
       {/* ===== Header Bar ===== */}
@@ -81,7 +71,7 @@ export default function AdminDashboard({eventsList}) {
           zIndex: 1000,
         }}
       >
-        <IconButton>
+        <IconButton onClick={()=>navigate("/admin")}>
           <HomeIcon sx={{ color: "white", fontSize: isMobile ? 24 : 28 }} />
         </IconButton>
         <Typography
@@ -170,7 +160,7 @@ export default function AdminDashboard({eventsList}) {
                 {event.title.toUpperCase()}
               </Typography>
               <Typography sx={{ color: "#ccc", fontSize: "0.9rem" }}>
-                {format(new Date(event.eventDate), 'MMM d, yyyy')} | {format(new Date(event.eventTimeStart), 'hh:mm:ss a')} - {format(new Date(event.eventTimeEnd), 'hh:mm:ss a')}
+                {format(new Date(event.eventDate), 'MMM d, yyyy')} | {format(new Date(event.eventTimeStart), 'hh:mm a')} - {format(new Date(event.eventTimeEnd), 'hh:mm a')}
                 {/* {event.date} {event.time && `| ${event.time}`} */}
               </Typography>
               <Typography sx={{ color: "#aaa", fontSize: "0.85rem" }}>
@@ -179,8 +169,11 @@ export default function AdminDashboard({eventsList}) {
             </Box>
 
             <Box>
-              <IconButton sx={{ color: "#FFC629" }}>
+              <IconButton sx={{ color: "#FFC629" }} onClick={()=>handleEdit(event._id)}>
                 <EditIcon />
+              </IconButton>
+              <IconButton sx={{ color: "#FFC629" }} onClick={()=>handleDelete(event._id)}>
+                <DeleteIcon />
               </IconButton>
               <IconButton sx={{ color: "#FFC629" }}>
                 <DownloadIcon />

@@ -1,4 +1,13 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import LockIcon from "@mui/icons-material/Lock";
+import { DatePicker, TimePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+
+//MUI
+import HomeIcon from "@mui/icons-material/Home";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+
 import {
   Box,
   Typography,
@@ -8,28 +17,24 @@ import {
   useMediaQuery,
   Paper,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import LockIcon from "@mui/icons-material/Lock";
-
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker, TimePicker } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs";
 
 export default function AdminNewEvent({onAddEvent}) {
 
   const isMobile = useMediaQuery("(max-width:600px)");
   const navigate = useNavigate();
 
+  const [error, setError] = useState("");
+
   const [event, setEvent] = useState({
-    title: null,
+    title: "",
     eventDate: dayjs(),
     eventTimeStart: dayjs(),
     eventTimeEnd: dayjs().add(1, "hour"), 
-    location: null,
-    description: null,
+    location: "",
+    description: "",
   });
+
+  const handleCancel = () => navigate("/admin");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -43,14 +48,46 @@ export default function AdminNewEvent({onAddEvent}) {
     if(event.title != null && event.location != null && event.description != null){
         onAddEvent(event);
         navigate("/admin");
+    }else{
+      setError("Please complete all required fields.");
+      return;
     }
   
   };
 
-  const handleCancel = () => navigate("/admin");
+
 
   return (
       <>
+       {/* ===== Header Bar ===== */}
+      <Box
+        sx={{
+          width: "100%",
+          backgroundColor: "#FFC629",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: isMobile ? "8px 15px" : "12px 25px",
+          boxShadow: "0 4px 6px rgba(0,0,0,0.2)",
+          position: "sticky",
+          top: 0,
+          zIndex: 1000,
+        }}
+      >
+        <IconButton onClick={()=>navigate("/admin")}>
+          <HomeIcon sx={{ color: "white", fontSize: isMobile ? 24 : 28 }} />
+        </IconButton>
+        <Typography
+          variant={isMobile ? "h6" : "h5"}
+          sx={{ fontWeight: "bold", color: "white", letterSpacing: "1px" }}
+        >
+          ADMIN DASHBOARD
+        </Typography>
+        <IconButton>
+          <AccountCircleIcon sx={{ color: "white", fontSize: isMobile ? 24 : 28 }} />
+        </IconButton>
+      </Box>
+
         {/* ===== Page Title & Lock Icon ===== */}
         <Box sx={{ textAlign: "center", mt: 5 }}>
           <LockIcon sx={{ fontSize: 50, color: "#FFC629", mb: 1 }} />
@@ -71,18 +108,23 @@ export default function AdminNewEvent({onAddEvent}) {
             boxShadow: "0 6px 18px rgba(0,0,0,0.4)",
           }}
         >
+           {/* ===== FORM ===== */}
+
           <form autoComplete="off" onSubmit={handleSubmit}>
           {/* Back Icon */}
           <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-            {/* <IconButton onClick={handleCancel} sx={{ color: "#FFC629", mr: 1 }}>
-              <ArrowBackIcon />
-            </IconButton> */}
             <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-              New Event Details
+              New Event 
             </Typography>
           </Box>
-          
-          {/* ===== FORM ===== */}
+
+           {/* Error */}
+          {error && (
+              <Typography sx={{ color: "#ff6b6b", mb: 2, fontSize: 14 }}>
+                  {error}
+              </Typography>
+          )}
+         
           
           {/* ===== Event Name ===== */}
           <Typography sx={{ mb: 1 }}>Event Name:</Typography>
@@ -115,9 +157,9 @@ export default function AdminNewEvent({onAddEvent}) {
 
           {/* ===== Event Time ===== */}
           <Typography sx={{ mb: 1 }}>Event Time:</Typography>
-          <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+          <Box sx={{ display: "flex", flexDirection:"row",gap: 2, mb: 2 }}>
             {/* Start Time */}
-            <Paper elevation={2} sx={{ p: 1, flex: 1, backgroundColor: "white" }}>
+            <Paper elevation={2} sx={{ p: 1, flex: 1, backgroundColor: "white", width:"40%"}}>
               <TimePicker
                 value={event.eventTimeStart}
                 onChange={(newValue) =>
@@ -128,7 +170,7 @@ export default function AdminNewEvent({onAddEvent}) {
             </Paper>
 
             {/* End Time */}
-            <Paper elevation={2} sx={{ p: 1, flex: 1, backgroundColor: "white" }}>
+            <Paper elevation={2} sx={{ p: 1, flex: 1, backgroundColor: "white",width:"40%"}}>
               <TimePicker
                 value={event.eventTimeEnd}
                 onChange={(newValue) =>
