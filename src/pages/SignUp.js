@@ -9,6 +9,8 @@ import KSUBanner from "../assets/ksubanner2.jpg";
 export default function SignUp({onSignUp}) {
 
   const navigate = useNavigate();
+  const [fName, setfName] = useState("");
+  const [lName, setlName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -33,7 +35,7 @@ export default function SignUp({onSignUp}) {
     }
 
     
-    onSignUp(email,password);
+    onSignUp(fName,lName,email,password);
     setSubmitted(true);
     setEmail("");
     setPassword("");
@@ -123,6 +125,44 @@ export default function SignUp({onSignUp}) {
             Sign Up with KSU Email
           </Typography>
 
+          <TextField
+            fullWidth
+            type="string"
+            label="First name"
+            variant="standard"
+            value={fName}
+            onChange={(e) => setfName(e.target.value)}
+            required
+            sx={{
+              mb: 3,
+              input: { color: "white" },
+              label: { color: "#bbb" },
+              "& .MuiInput-underline:before": { borderBottomColor: "#444" },
+              "& .MuiInput-underline:hover:before": {
+                borderBottomColor: "#777",
+              },
+              "& .MuiInput-underline:after": { borderBottomColor: "#FFC629" },
+            }}
+          />
+          <TextField
+            fullWidth
+            type="string"
+            label="Last name"
+            variant="standard"
+            value={lName}
+            onChange={(e) => setlName(e.target.value)}
+            required
+            sx={{
+              mb: 3,
+              input: { color: "white" },
+              label: { color: "#bbb" },
+              "& .MuiInput-underline:before": { borderBottomColor: "#444" },
+              "& .MuiInput-underline:hover:before": {
+                borderBottomColor: "#777",
+              },
+              "& .MuiInput-underline:after": { borderBottomColor: "#FFC629" },
+            }}
+          />
           <TextField
             fullWidth
             type="email"

@@ -4,8 +4,22 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 
+//API methiods
+import { registerUser,
+  loginUser,
+  getEvents,
+  getEvent,
+  addEvent,
+  updateEvent,
+  deleteEvent,
+  addUser,
+  getUsers,
+  updateUser,
+  deleteUser,
+  getUser,
+} from './services/api';
+
 //React components
-import { registerUser,loginUser,getEvents,getEvent,addEvent,updateEvent,deleteEvent} from './services/api';
 import Root from './root';
 import ErrorPage from './errorPage';
 import Login from "./pages/Login";
@@ -15,18 +29,24 @@ import EventDetails from "./pages/EventDetails";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminNewEvent from './pages/AdminNewEvent';
 import AdminEditEvent from './pages/AdminEditEvent';
+import Progress from './pages/Progress';
+import AdminAddAccount from './pages/AdminAddAcount';
+import AdminViewAccounts from './pages/AdminViewAccount';
+import AdminEditAccount from './pages/AdminEditAccount';
 
 
 
 
  function App() {
-  
+    <title>ffdfd</title>
     const [events,setEvents] = useState([]);
+    const [users,setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(()=>{
-
+      
+      document.title = 'Student Engagement Platform';
       let isMounted = true;
 
       const loadEvents = async () => {
@@ -42,8 +62,22 @@ import AdminEditEvent from './pages/AdminEditEvent';
             setLoading(false);
           }
       };
+      
+      const loadUsers = async() =>{
+        try{
+          if(isMounted){
+            const data = await getUsers();
+           console.log(data);
+           setUsers(data)
+          }
+          
+        }catch(err){
+           if (isMounted){setError(err);}
+        }
+      };
 
       loadEvents();
+      loadUsers();
 
       return () => {
       isMounted = false; 
@@ -121,6 +155,51 @@ import AdminEditEvent from './pages/AdminEditEvent';
             }
 
             const resp = await getEvent(params.id);
+
+            console.log(resp);
+
+            if(resp.status === 400){
+              throw new Response("", { status: 400 });
+            }
+            if(resp.status === 404){
+              throw new Response("", { status: 404 });
+            }
+            if(resp.status === 500){
+              throw new Response("", { status: 500 });
+            }
+            if(resp.status === 503){
+              throw new Response("", { status: 503 });
+            }
+
+            return resp;
+          },
+          errorElement: <ErrorPage />
+        },
+        {
+          path: "my-progress",
+          element: <Progress />,
+          errorElement: <ErrorPage />
+        },
+        {
+          path:"/admin/add-account",
+          element: <AdminAddAccount onAddUser={addUser} />,
+          errorElement: <ErrorPage />
+        },
+        {
+          path:"/admin/view-accounts",
+          element: <AdminViewAccounts usersList={users} onDelete={deleteUser} />,
+          errorElement: <ErrorPage />
+        },
+        {
+            path:"/admin/edit-account/:id",
+            element:< AdminEditAccount onEdit={updateUser}/>,
+            loader: async({params})=>{
+
+            if(!params){
+              throw new Response("", { status: 400 });
+            }
+
+            const resp = await getUser(params.id);
 
             console.log(resp);
 

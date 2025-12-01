@@ -33,10 +33,13 @@ export default function Login({onSignIn}) {
       setError("All fields are required.");
       return;
     }
+    
     onSignIn(email,password);
     setEmail("");
     setPassword("");
     navigate("/events");
+    
+    
   };
 
    useEffect(() => {

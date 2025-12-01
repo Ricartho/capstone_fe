@@ -214,6 +214,7 @@ export default function AdminDashboard({eventsList,onDelete}) {
 
         <Button
           variant="contained"
+         onClick={()=>navigate("/admin/view-accounts")}
           sx={{
             backgroundColor: "#FFC629",
             color: "#000",

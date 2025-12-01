@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 //MUI
 import HomeIcon from "@mui/icons-material/Home";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 import {
   Box,
@@ -112,11 +113,26 @@ export default function AdminNewEvent({onAddEvent}) {
 
           <form autoComplete="off" onSubmit={handleSubmit}>
           {/* Back Icon */}
-          <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+          {/* <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
             <Typography variant="h6" sx={{ fontWeight: "bold" }}>
               New Event 
             </Typography>
-          </Box>
+          </Box> */}
+          {/* Back Button */}
+        <IconButton
+          onClick={handleCancel}
+          sx={{
+            mb:3,
+            backgroundColor: "#FFC629",
+            color: "black",
+            width: 35,
+            height: 35,
+            alignSelf: "flex-start",
+            "&:hover": { backgroundColor: "#e6b400" },
+          }}
+        >
+          <ArrowBackIcon />
+        </IconButton>
 
            {/* Error */}
           {error && (

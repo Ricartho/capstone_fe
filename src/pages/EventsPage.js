@@ -20,7 +20,7 @@ import KSUBanner from "../assets/ksubanner2.jpg";
 
 export default function EventsPage({eventsList,loading}) {
 
-  console.log(eventsList);
+
 
   const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width:600px)");
