@@ -77,11 +77,11 @@ export const loginUser = async (email,password) => {
     
     }catch (error) {
       console.error("Error adding event:", error);
-      return error;
+      return error; 
     }
  };
 
- //EVENTS
+ //EVENTSS
  export const getEvents = async () => {
   try {
     const response = await API.get("/events");
