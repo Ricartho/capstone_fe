@@ -8,7 +8,7 @@ import SignUp from "./pages/SignUp";
 import EventsPage from "./pages/EventsPage";
 import EventDetails from "./pages/EventDetails";
 import AdminDashboard from "./pages/AdminDashboard";
-import AdminEditEvent from "./pages/AdminEditEvent"; 
+import AdminEditEvent from "./pages/AdminEditEvent";
 import Progress from "./pages/Progress";
 import AdminViewAccounts from "./pages/AdminViewAccounts";
 import AdminEditAccount from "./pages/AdminEditAccount";
@@ -16,6 +16,7 @@ import AdminPasswordChange from "./pages/AdminPasswordChange";
 import AdminNewEvent from "./pages/AdminNewEvent";
 import AdminAddAccount from "./pages/AdminAddAccount";
 import ForgotPassword from "./pages/ForgotPassword";
+import AdminNewMilestone from "./pages/AdminNewMilestone"; // ✅ new import
 
 export default function App() {
   return (
@@ -61,7 +62,7 @@ export default function App() {
 
         {/* Admin Routes */}
         <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/edit-event/:id" element={<AdminEditEvent />} /> {/* ✅ fixed route */}
+        <Route path="/admin/edit-event/:id" element={<AdminEditEvent />} />
         <Route path="/admin/new-event" element={<AdminNewEvent />} />
         <Route path="/admin/view-accounts" element={<AdminViewAccounts />} />
         <Route path="/admin/add-account" element={<AdminAddAccount />} />
@@ -70,6 +71,7 @@ export default function App() {
           path="/admin/password-change/:id"
           element={<AdminPasswordChange />}
         />
+        <Route path="/admin/new-milestone" element={<AdminNewMilestone />} /> {/* ✅ new route */}
 
         {/* Progress Page */}
         <Route path="/progress" element={<Progress />} />
