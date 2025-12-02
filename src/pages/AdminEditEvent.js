@@ -28,7 +28,11 @@ export default function AdminEditEvent({onEdit}) {
   const eventToEdit = useLoaderData();
   console.log(eventToEdit);
 
-
+ const handleLogout = () =>{
+      localStorage.removeItem('userToken');
+      localStorage.removeItem('userId');
+      navigate("/");
+    }
   const isMobile = useMediaQuery("(max-width:600px)");
   const navigate = useNavigate();
 
@@ -101,7 +105,7 @@ export default function AdminEditEvent({onEdit}) {
         >
           ADMIN DASHBOARD
         </Typography>
-        <IconButton>
+        <IconButton onClick={()=>handleLogout()} >
           <AccountCircleIcon sx={{ color: "white", fontSize: isMobile ? 24 : 28 }} />
         </IconButton>
       </Box>

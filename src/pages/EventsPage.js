@@ -15,8 +15,10 @@ import {
 
 import HomeIcon from "@mui/icons-material/Home";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import TuneIcon from '@mui/icons-material/Tune';
 import { useNavigate } from "react-router-dom";
 import KSUBanner from "../assets/ksubanner2.jpg";
+import LogoutIcon from '@mui/icons-material/Logout';
 
 export default function EventsPage({eventsList,loading}) {
 
@@ -31,6 +33,12 @@ export default function EventsPage({eventsList,loading}) {
       console.log(id); 
       navigate(`/eventdetails/${id}`);
     };
+
+    const handleLogout = () =>{
+      localStorage.removeItem('userToken');
+      localStorage.removeItem('userId');
+      navigate("/");
+    }
 
   return (
     <>
@@ -53,10 +61,17 @@ export default function EventsPage({eventsList,loading}) {
         <IconButton onClick={() => navigate("/events")} size="small">
           <HomeIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
         </IconButton>
-
-        <IconButton onClick={() => navigate("/signup")} size="small">
-          <AccountCircleIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
+       <Box>
+        <IconButton onClick={() => navigate("/my-progress")} size="small">
+          <TuneIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
         </IconButton>
+       
+
+        <IconButton onClick={()=>handleLogout()} size="small">
+          <LogoutIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
+        </IconButton>
+        </Box>
+        
       </Box>
 
       {/* ===== Banner ===== */}
@@ -138,7 +153,7 @@ export default function EventsPage({eventsList,loading}) {
                 boxShadow: "0 8px 25px rgba(0,0,0,0.6)",
               },
             }}
-            //onClick={() => navigate("/event-details")}
+            
             onClick = {() => handleShow(event._id)}
           >
             <CardContent sx={{ textAlign: "center" }}>

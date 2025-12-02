@@ -28,7 +28,11 @@ export default function AdminViewAccounts({usersList,onDelete}) {
   const [search, setSearch] = useState("");
   const [fadeIn] = useState(true);
 
-  
+  const handleLogout = () =>{
+      localStorage.removeItem('userToken');
+      localStorage.removeItem('userId');
+      navigate("/");
+    }
   const filteredUsers = usersList.filter((u) =>
     u.lName.toLowerCase().includes(search.toLowerCase())
   );
@@ -64,7 +68,7 @@ export default function AdminViewAccounts({usersList,onDelete}) {
         >
           ADMIN
         </Typography>
-        <IconButton size="small">
+        <IconButton size="small" onClick={()=>handleLogout()} >
           <AccountCircleIcon sx={{ color: "white" }} />
         </IconButton>
       </Box>
@@ -210,7 +214,7 @@ export default function AdminViewAccounts({usersList,onDelete}) {
         }}
       >
         <Typography variant="body1" sx={{ color: "#FFC629" }}>
-          Total Events: {usersList.length}
+          Total Users: {usersList.length}
         </Typography>
         <Typography variant="body1" sx={{ color: "#FFC629" }}>
           Total Check-ins: 52(Static)

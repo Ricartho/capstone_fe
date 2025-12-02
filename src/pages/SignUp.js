@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Box, Typography, TextField, Button, Alert, Fade } from "@mui/material";
 import KSUBanner from "../assets/ksubanner2.jpg";
+import { set } from "date-fns";
 
 
 
@@ -35,14 +36,21 @@ export default function SignUp({onSignUp}) {
     }
 
     
-    onSignUp(fName,lName,email,password);
-    setSubmitted(true);
-    setEmail("");
-    setPassword("");
-    setConfirmPassword("");
-    // navigate("/events");
+   const response = await onSignUp(fName,lName,email,password);
+   if(!response.id){
+       setError("Error while create account, please try again");
+      return;
+   }else{
+      setSubmitted(true);
+      setfName("");
+      setlName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+      return;
+   }
     
-  };
+};
 
   useEffect(() => {
     const timer = setTimeout(() => setFadeIn(true), 150);

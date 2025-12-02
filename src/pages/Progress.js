@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 //MUI
 import HomeIcon from "@mui/icons-material/Home";
+import TuneIcon from '@mui/icons-material/Tune';
+import LogoutIcon from '@mui/icons-material/Logout';
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import {
   Box,
@@ -16,23 +18,54 @@ import {
    useMediaQuery,
     IconButton,
 } from "@mui/material";
+
 import axios from "axios";
 // import { BASE_URL } from "../config";
 import KSUBanner from "../assets/ksubanner2.jpg";
+import { set } from "date-fns";
 
-export default function Progress() {
-  const isMobile = useMediaQuery("(max-width:600px)");
+export default function Progress({newLoading,totalEvents,progressCount,attentedList}) {
+console.log(totalEvents);
+console.log(progressCount);
+console.log(attentedList);
+console.log(newLoading);
+  
+const isMobile = useMediaQuery("(max-width:600px)");
+
   const navigate = useNavigate();
+ const handleLogout = () =>{
+      localStorage.removeItem('userToken');
+      localStorage.removeItem('userId');
+      navigate("/");
+    }
   const [fadeIn, setFadeIn] = useState(false);
+  const [loading, setLoading] = useState(newLoading);
+  
   const [progressData, setProgressData] = useState({
-    totalEvents: 10,
-    completed: 5,
-    attendedEvents: [],
-    milestones: [],
+    totalEvents: 0, //total of events in the db
+    completed: 0, //quantity i click attended
+    attendedEvents: [], 
+    milestones: [{title:"Bronze Milestone",description:"Attend 3 events", achieved: progressCount>=3 ? (true):(false)},
+      {title:"Silver Milestone",description:"Attend 5 events", achieved: progressCount>=5 ? (true):(false)},
+      {title:"Gold Milestone",description:"Attend 10 events", achieved:progressCount>=10 ? (true):(false)}
+    ],
   });
-  const [loading, setLoading] = useState(true);
+
+  const [totalEvents2,setTotalEvent2] = useState(0);
+  const [completed,setCompleted] = useState(0);
+  const [attendedEvents2,setAttentedEvents2] = useState([]);
+  const [milestones,setMileStones] =useState([{title:"Bronze Milestone",description:"Attend 3 events", achieved: progressCount>=3 ? (true):(false)},
+      {title:"Silver Milestone",description:"Attend 5 events", achieved: progressCount>=5 ? (true):(false)},
+      {title:"Gold Milestone",description:"Attend 10 events", achieved:progressCount>=10 ? (true):(false)}
+    ]);
+
+  
 
   useEffect(() => {
+    // setProgressData({totalEvents:totalEvents, completed:progressCount,attendedEvents:attentedList});
+    setTotalEvent2(totalEvents);
+    setCompleted(progressCount);
+    setAttentedEvents2(attentedList);
     const timer = setTimeout(() => setFadeIn(true), 150);
     return () => clearTimeout(timer);
   }, []);
@@ -53,9 +86,13 @@ export default function Progress() {
 //     fetchProgress();
 //   }, []);
 
+  // const progress =
+  //   progressData.totalEvents2 > 0
+  //     ? (progressData.completed2 / progressData.totalEvents2) * 100
+  //     : 0;
   const progress =
-    progressData.totalEvents > 0
-      ? (progressData.completed / progressData.totalEvents) * 100
+    totalEvents2 > 0
+      ? (completed / totalEvents2) * 100
       : 0;
 
   return (
@@ -79,10 +116,15 @@ export default function Progress() {
         <IconButton onClick={() => navigate("/events")} size="small">
           <HomeIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
         </IconButton>
-
-        <IconButton onClick={() => navigate("/signup")} size="small">
-          <AccountCircleIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
+        <Box>
+          <IconButton onClick={() => navigate("/my-progress")} size="small">
+                    <TuneIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
+                  </IconButton>
+          <IconButton onClick={()=>handleLogout()} size="small">
+          <LogoutIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
         </IconButton>
+        </Box>
+        
       </Box>
       <Fade in={fadeIn} timeout={1000}>
         <Box sx={{ position: "relative", width: "100%" }}>
@@ -143,7 +185,7 @@ export default function Progress() {
           <Typography sx={{ mt: 1, color: "#FFC629" }}>
             {loading
               ? "Loading..."
-              : `${progressData.completed} of ${progressData.totalEvents} events attended`}
+              : `${completed} of ${totalEvents} events attended`}
           </Typography>
         </Box>
       </Fade>
@@ -158,7 +200,7 @@ export default function Progress() {
             Milestones
           </Typography>
           <Grid container spacing={2}>
-            {progressData.milestones.map((m, i) => (
+            {milestones.map((m, i) => (
               <Grid item xs={12} sm={4} key={i}>
                 <Card
                   sx={{
@@ -207,12 +249,12 @@ export default function Progress() {
             <Typography sx={{ color: "#bbb", textAlign: "center" }}>
               Loading events...
             </Typography>
-          ) : progressData.attendedEvents.length === 0 ? (
+          ) : attendedEvents2.length === 0 ? (
             <Typography sx={{ color: "#bbb", textAlign: "center" }}>
               No events attended yet.
             </Typography>
           ) : (
-            progressData.attendedEvents.map((event, idx) => (
+            attendedEvents2.map((event, idx) => (
               <Box
                 key={idx}
                 sx={{
@@ -225,7 +267,8 @@ export default function Progress() {
                 }}
               >
                 <Typography sx={{ fontWeight: "bold", color: "#FFC629" }}>
-                  {event}
+                  
+                  {event.event_title.toUpperCase()}
                 </Typography>
               </Box>
             ))

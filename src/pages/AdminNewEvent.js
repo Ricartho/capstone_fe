@@ -34,7 +34,11 @@ export default function AdminNewEvent({onAddEvent}) {
     location: "",
     description: "",
   });
-
+  const handleLogout = () =>{
+      localStorage.removeItem('userToken');
+      localStorage.removeItem('userId');
+      navigate("/");
+    }
   const handleCancel = () => navigate("/admin");
 
   const handleChange = (e) => {
@@ -84,7 +88,7 @@ export default function AdminNewEvent({onAddEvent}) {
         >
           ADMIN DASHBOARD
         </Typography>
-        <IconButton>
+        <IconButton onClick={()=>handleLogout()}>
           <AccountCircleIcon sx={{ color: "white", fontSize: isMobile ? 24 : 28 }} />
         </IconButton>
       </Box>

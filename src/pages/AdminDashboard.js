@@ -33,7 +33,11 @@ export default function AdminDashboard({eventsList,onDelete}) {
   const [search, setSearch] = useState("");
 
   const isMobile = useMediaQuery("(max-width:600px)");
-
+ const handleLogout = () =>{
+      localStorage.removeItem('userToken');
+      localStorage.removeItem('userId');
+      navigate("/");
+    }
   const filteredEvents = search
     ? eventsList.filter((e) =>
         e.title.toLowerCase().includes(search.toLowerCase())
@@ -80,7 +84,7 @@ export default function AdminDashboard({eventsList,onDelete}) {
         >
           ADMIN DASHBOARD
         </Typography>
-        <IconButton>
+        <IconButton onClick={()=>handleLogout()}>
           <AccountCircleIcon sx={{ color: "white", fontSize: isMobile ? 24 : 28 }} />
         </IconButton>
       </Box>

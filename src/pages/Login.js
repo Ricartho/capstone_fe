@@ -11,6 +11,7 @@ import {
   Alert
 } from "@mui/material";
 import KSUBanner from "../assets/ksubanner2.jpg";
+import axios from "axios";
 
 
 
@@ -32,14 +33,23 @@ export default function Login({onSignIn}) {
     if (!email.trim() || !password.trim()) {
       setError("All fields are required.");
       return;
+     }
+
+    const response = await onSignIn(email,password);
+
+    if(!response.access_token){
+        setError("Email or/and password is incorrect");
+        return;
+    }else{
+        setEmail("");
+        setPassword("");
+        if(response.user_admin){
+          navigate("/admin")
+        }else{
+          navigate("/events");
+        }
+        
     }
-    
-    onSignIn(email,password);
-    setEmail("");
-    setPassword("");
-    navigate("/events");
-    
-    
   };
 
    useEffect(() => {

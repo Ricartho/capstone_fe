@@ -7,14 +7,14 @@ const API = axios.create({
 
 // APPI CALL METHODS
 //USERS
-export const registerUser = async(email,password) => {
+export const registerUser = async(fName,lName,email,password) => {
     try{
-      const resp =  await API.post('/auth/register',{email,password});
+      const resp =  await API.post('/auth/register',{fName,lName,email,password});
+      console.log(resp.data);
       return await resp.data;
     }catch(error){
-    console.log(error);
-    return error;
-    // throw new Error("This email address is already in use, please try again",{status:500});
+      console.log(error);
+    return await error;
     } 
    };
 
@@ -25,9 +25,7 @@ export const loginUser = async (email,password) => {
     localStorage.setItem('userId',resp.data.user_id);
     return await resp.data;
   }catch(error){
-    console.log(error);
-    return error;
-    // throw new Error("Login credentials incorrect, please try again",{status:500});
+    return  error;
   
   }
  };
@@ -38,7 +36,6 @@ export const loginUser = async (email,password) => {
        return await response.data || {};
     }catch (error) {
       console.error("Error adding user:", error);
-      // throw error;
       return error;
     }
  };
@@ -132,4 +129,36 @@ export const deleteEvent = async (id) => {
     return error;
   }
 };
+
+//Progress
+
+export const newProgress = async(userId,eventId,eventTitle) => {
+  try{
+    const response = await API.get(`progress/${userId}/${eventId}/${eventTitle}`);
+    return response.data || {};
+  }catch (error) {
+    console.error("Error deleting event:", error);
+    return error;
+}
+};
+
+export const progressCount = async(userId) => {
+  try{
+    const response = await API.get(`progress/count/${userId}`);
+    return await response.data || {};
+  }catch (error) {
+    console.error("Error deleting event:", error);
+    return error;
+}};
+
+export const progressList = async(userId) => {
+  try{
+    const response = await API.get(`progress/${userId}`);
+    return await response.data || {};
+  }catch (error) {
+    console.error("Error deleting event:", error);
+    return error;
+}
+};
+
 

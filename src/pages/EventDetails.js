@@ -13,17 +13,29 @@ import {
 } from "@mui/material";
 
 import HomeIcon from "@mui/icons-material/Home";
+
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import LogoutIcon from '@mui/icons-material/Logout';
+import TuneIcon from '@mui/icons-material/Tune';
 import { useNavigate } from "react-router-dom";
 import KSUBanner from "../assets/ksubanner2.jpg";
 
 
-export default function EventDetails() {
+export default function EventDetails({onAttended}) {
 
   const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width:600px)");
 
+  const handleAttented = async (eventId,eventTitle) =>{
+    const currentUserId = localStorage.getItem('userId');
+    await onAttended(currentUserId,eventId,eventTitle);
+  }
 
+   const handleLogout = () =>{
+      localStorage.removeItem('userToken');
+      localStorage.removeItem('userId');
+      navigate("/");
+    }
   //The event from the API, served by the loader on App.js
   const eventToDisplay = useLoaderData();
 
@@ -45,13 +57,19 @@ export default function EventDetails() {
           zIndex: 1000,
         }}
       >
+        
         <IconButton onClick={() => navigate("/events")} size="small">
-          <HomeIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
+                 <HomeIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
+               </IconButton>
+       
+        <Box>
+          <IconButton onClick={() => navigate("/my-progress")} size="small">
+          <TuneIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
         </IconButton>
-
-        <IconButton onClick={() => navigate("/signup")} size="small">
-          <AccountCircleIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
+        <IconButton onClick={()=>handleLogout()} size="small">
+          <LogoutIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
         </IconButton>
+        </Box>
       </Box>
 
       {/* ===== Banner ===== */}
@@ -160,7 +178,7 @@ export default function EventDetails() {
               borderRadius: "20px",
               "&:hover": { backgroundColor: "#e6b400" },
             }}
-            onClick={() => alert("Attendance marked (demo only)!")}
+            onClick={() => handleAttented(eventToDisplay.id,eventToDisplay.title)}
           >
             Mark Attended
           </Button>

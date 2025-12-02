@@ -38,7 +38,11 @@ console.log(formData);
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
+const handleLogout = () =>{
+      localStorage.removeItem('userToken');
+      localStorage.removeItem('userId');
+      navigate("/");
+    }
   const handleSubmit = (e) => {
     // e.preventDefault();
     setError("");
@@ -84,7 +88,7 @@ console.log(formData);
             >
               ADMIN DASHBOARD
             </Typography>
-            <IconButton>
+            <IconButton onClick={()=>handleLogout()}>
               <AccountCircleIcon sx={{ color: "white", fontSize: isMobile ? 24 : 28 }} />
             </IconButton>
           </Box>

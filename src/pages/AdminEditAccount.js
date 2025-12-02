@@ -30,6 +30,11 @@ export default function AdminEditAccount({onEdit}) {
   const navigate = useNavigate();
 
   const { id } = useParams();
+   const handleLogout = () =>{
+      localStorage.removeItem('userToken');
+      localStorage.removeItem('userId');
+      navigate("/");
+    }
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -134,7 +139,7 @@ const handleCancel = () => {
         >
           ADMIN DASHBOARD
         </Typography>
-        <IconButton>
+        <IconButton onClick={()=>handleLogout()} >
           <AccountCircleIcon sx={{ color: "white", fontSize: isMobile ? 24 : 28 }} />
         </IconButton>
       </Box>

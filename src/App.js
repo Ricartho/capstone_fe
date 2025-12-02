@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect, use} from 'react';
 import { createBrowserRouter, RouterProvider} from 'react-router-dom';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
@@ -17,6 +17,9 @@ import { registerUser,
   updateUser,
   deleteUser,
   getUser,
+  newProgress,
+  progressCount,
+  progressList
 } from './services/api';
 
 //React components
@@ -38,22 +41,23 @@ import AdminEditAccount from './pages/AdminEditAccount';
 
 
  function App() {
-    <title>ffdfd</title>
+   
     const [events,setEvents] = useState([]);
+    const [eventsAttentedCount,setEventsAttentedCount] = useState("");
+    const [attentedList,setAttentedList] = useState([]);
     const [users,setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect(()=>{
+  useEffect(()=>{
       
-      document.title = 'Student Engagement Platform';
+      document.title = 'Student Engagement Web Portal';
       let isMounted = true;
 
       const loadEvents = async () => {
         try{
           const data = await getEvents();
           if (isMounted){ 
-            console.log(data);
             setEvents(data);
           }
         }catch(err){
@@ -67,8 +71,7 @@ import AdminEditAccount from './pages/AdminEditAccount';
         try{
           if(isMounted){
             const data = await getUsers();
-           console.log(data);
-           setUsers(data)
+            setUsers(data)
           }
           
         }catch(err){
@@ -76,8 +79,34 @@ import AdminEditAccount from './pages/AdminEditAccount';
         }
       };
 
+      const loadCountAttented = async() => {
+        const currentUserId = localStorage.getItem('userId');
+        try{
+          if(isMounted){
+            const res = await progressCount(currentUserId);
+            setEventsAttentedCount(res);
+          }
+        }catch(err){
+           if (isMounted){setError(err);}
+        }
+      };
+
+      const loadListAttented = async() => {
+        const currentUserId = localStorage.getItem('userId');
+        try{
+          if(isMounted){
+            const res = await progressList(currentUserId);
+            setAttentedList(res);
+          }
+        }catch(err){
+           if (isMounted){setError(err);}
+        }
+      };
+
       loadEvents();
       loadUsers();
+      loadListAttented();
+      loadCountAttented();
 
       return () => {
       isMounted = false; 
@@ -108,7 +137,7 @@ import AdminEditAccount from './pages/AdminEditAccount';
         },
         {
           path:'/eventdetails/:id',
-          element:<EventDetails />,
+          element:<EventDetails onAttended={newProgress}/>,
           loader:async({params})=>{
             
             if(!params){
@@ -177,7 +206,7 @@ import AdminEditAccount from './pages/AdminEditAccount';
         },
         {
           path: "my-progress",
-          element: <Progress />,
+          element: <Progress newLoading={loading} totalEvents={events.length} progressCount={eventsAttentedCount} attentedList={attentedList}/>,
           errorElement: <ErrorPage />
         },
         {
@@ -219,6 +248,10 @@ import AdminEditAccount from './pages/AdminEditAccount';
             return resp;
           },
           errorElement: <ErrorPage />
+        },
+        {
+          path:"/logout",
+          errorElement: <ErrorPage />
         }
        
       ],
@@ -232,85 +265,6 @@ import AdminEditAccount from './pages/AdminEditAccount';
       </LocalizationProvider>
     );
 
-
-  // return (
-  //   <Router>
-  //     {/* ===== TEMPORARY NAVIGATION BAR FOR DEMO ===== */}
-  //     <Box
-  //       sx={{
-  //         display: "flex",
-  //         justifyContent: "center",
-  //         gap: 2,
-  //         backgroundColor: "#FFC629",
-  //         padding: "10px 0",
-  //         position: "sticky",
-  //         top: 0,
-  //         zIndex: 1000,
-  //       }}
-  //     >
-  //       <Button
-  //         component={Link}
-  //         to="/"
-  //         variant="contained"
-  //         sx={{
-  //           backgroundColor: "black",
-  //           color: "white",
-  //           "&:hover": { backgroundColor: "#333" },
-  //         }}
-  //       >
-  //         Login
-  //       </Button>
-
-  //       <Button
-  //         component={Link}
-  //         to="/signup"
-  //         variant="contained"
-  //         sx={{
-  //           backgroundColor: "black",
-  //           color: "white",
-  //           "&:hover": { backgroundColor: "#333" },
-  //         }}
-  //       >
-  //         Sign Up
-  //       </Button>
-
-  //       <Button
-  //         component={Link}
-  //         to="/events"
-  //         variant="contained"
-  //         sx={{
-  //           backgroundColor: "black",
-  //           color: "white",
-  //           "&:hover": { backgroundColor: "#333" },
-  //         }}
-  //       >
-  //         Events
-  //       </Button>
-
-  //       <Button
-  //         component={Link}
-  //         to="/admin"
-  //         variant="contained"
-  //         sx={{
-  //           backgroundColor: "black",
-  //           color: "white",
-  //           "&:hover": { backgroundColor: "#333" },
-  //         }}
-  //       >
-  //         Admin
-  //       </Button>
-  //     </Box>
-
-  //     {/* ===== PAGE ROUTES ===== */}
-  //     <Routes>
-  //       <Route path="/" element={<Login />} />
-  //       <Route path="/signup" element={<SignUp />} />
-  //       <Route path="/events" element={<EventsPage />} />
-  //       <Route path="/event-details" element={<EventDetails />} /> {/* 👈 NEW */}
-  //       <Route path="/admin" element={<AdminDashboard />} />
-  //     </Routes>
-  //   </Router>
-  // );
 
  }
   export default App;
