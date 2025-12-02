@@ -1,4 +1,4 @@
-import React,{useState,useEffect, use} from 'react';
+import React,{useState,useEffect, use, act} from 'react';
 import { createBrowserRouter, RouterProvider} from 'react-router-dom';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
@@ -41,84 +41,94 @@ import AdminEditAccount from './pages/AdminEditAccount';
 
 
  function App() {
-   
+  
+    //The states of the system
     const [events,setEvents] = useState([]);
+    const [users,setUsers] = useState([]);
+    const [milestones,setMilestones] = useState([]);
+
+    
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+
     const [eventsAttentedCount,setEventsAttentedCount] = useState("");
     const [attentedList,setAttentedList] = useState([]);
-    const [users,setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
-  useEffect(()=>{
-      
-      document.title = 'Student Engagement Web Portal';
-      let isMounted = true;
 
-      const loadEvents = async () => {
+    //The data load of the system//
+    //load all event from db via axios
+    const loadEvents = async () => {
         try{
           const data = await getEvents();
-          console.log(data);
-          if (isMounted){ 
-            setEvents(data);
-          }
-        }catch(err){
-          if (isMounted){setError(err);}
-          }finally{
-            setLoading(false);
-          }
-      };
-      
-      const loadUsers = async() =>{
-        try{
-          if(isMounted){
-            const data = await getUsers();
-            console.log(data);
-            setUsers(data)
-          }
+          setEvents(data);
           
         }catch(err){
-           if (isMounted){setError(err);}
+          setError(err);
         }
       };
+      
 
-
-      //rele yo nan progress
-      const loadCountAttented = async() => {
-        const currentUserId = localStorage.getItem('userId');
+      //load all user from db via axios
+    const loadUsers = async() =>{
         try{
-          if(isMounted){
-            const res = await progressCount(currentUserId);
-            console.log(res);
-            setEventsAttentedCount(res);
-          }
+          const data = await getUsers();
+          setUsers(data)
+          
+          
         }catch(err){
-           if (isMounted){setError(err);}
+          setError(err);
         }
       };
 
-      const loadListAttented = async() => {
-        const currentUserId = localStorage.getItem('userId');
+      //load student progress from db to update the local state
+      const loadProgress = async()=>{
+        const user = sessionStorage.getItem('userId');
         try{
-          if(isMounted){
-            const res = await progressList(currentUserId);
-            console.log(res);
-            setAttentedList(res);
-          }
+          const data = await progressList(user);
+          setAttentedList(data);
         }catch(err){
-           if (isMounted){setError(err);}
+          setError(err);
         }
       };
 
-      loadEvents();
-      loadUsers();
-      loadListAttented();
-      loadCountAttented();
+    //The actions of the system
+    //add a new event attented
+    const handleNewAttended = async (userId,eventId,eventTitle)=>{
+      try{
+        const action = await newProgress(userId,eventId,eventTitle);
+        console.log(action);
+        const updatedProgress = [...attentedList,action];
+        setAttentedList(updatedProgress);
+      }catch(err){
+          setError(err);
+        }
+    };
+   
+   
+    console.log(loading);
+    useEffect(()=>{
+      
+        document.title = 'Student Engagement Web Portal';
+        let isMounted = true;
 
-      return () => {
-      isMounted = false; 
+        loadEvents();
+        loadUsers();
+        loadProgress();
+        setLoading(false)
+        
+        console.log("data fetching completed!")
+      
+        return () => {
+        isMounted = false; 
     }
 
     },[]);
+
+    console.log(events);
+    console.log(users);
+    console.log(attentedList);
+ 
+    console.log(loading);
 
 
     const myRouter = createBrowserRouter([
@@ -143,7 +153,7 @@ import AdminEditAccount from './pages/AdminEditAccount';
         },
         {
           path:'/eventdetails/:id',
-          element:<EventDetails onAttended={newProgress}/>,
+          element:<EventDetails onAttended={handleNewAttended} attentedList={attentedList} />,
           loader:async({params})=>{
             
             if(!params){
@@ -212,7 +222,7 @@ import AdminEditAccount from './pages/AdminEditAccount';
         },
         {
           path: "my-progress",
-          element: <Progress newLoading={loading} totalEvents={events.length} progressCount={eventsAttentedCount} attentedList={attentedList}/>,
+          element: <Progress totalEvents={events.length} progressCount={attentedList.length} attentedList={attentedList}/>,
           errorElement: <ErrorPage />
         },
         {

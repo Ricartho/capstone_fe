@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect,useState}from "react";
 import { useLoaderData} from "react-router-dom";
 import { format } from 'date-fns';
 
@@ -21,24 +21,62 @@ import { useNavigate } from "react-router-dom";
 import KSUBanner from "../assets/ksubanner2.jpg";
 
 
-export default function EventDetails({onAttended}) {
+export default function EventDetails({onAttended,attentedList}) {
+  //The event from the API, served by the loader on App.js
+  const eventToDisplay = useLoaderData();
+
+  //get the current user id
+  const userId = sessionStorage.getItem('userId');
 
   const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width:600px)");
 
+  //Action from APP component
   const handleAttented = async (eventId,eventTitle) =>{
-    const currentUserId = localStorage.getItem('userId');
+    const currentUserId = sessionStorage.getItem('userId');
     await onAttended(currentUserId,eventId,eventTitle);
+    window.location.reload(); 
   }
 
-   const handleLogout = () =>{
-      localStorage.removeItem('userToken');
-      localStorage.removeItem('userId');
-      navigate("/");
-    }
-  //The event from the API, served by the loader on App.js
-  const eventToDisplay = useLoaderData();
+  //attendance state
+  const [attendence,setAttendance] = useState('');
 
+
+  //The menu bar actions
+    const handleHomepage = (path) =>{
+      navigate(path);
+      window.location.reload(); 
+    }
+    const handleProgressPage = (path) =>{
+      navigate(path);
+      window.location.reload(); 
+    }
+    const handleLogout = (path) =>{
+      sessionStorage.removeItem('userToken');
+      sessionStorage.removeItem('userId');
+      navigate(path);
+      window.location.reload(); 
+    }
+
+    //important for check in button
+    const verifyAttendence = (userId,eventId)=>{
+      const resp = attentedList.find(el =>el.id_user === userId && el.id_event === eventId);
+      setAttendance(resp);
+    };
+
+     //make sure the user is logged in
+    const checkLogin = () => {
+        if(!sessionStorage.getItem('userToken')){navigate("/");}
+      };
+    
+    useEffect(()=>{
+        checkLogin();
+        verifyAttendence(userId,eventToDisplay.id);
+        
+    },[]);
+
+  console.log(attendence);
+  
   return (
    <>
       {/* ===== Header Bar ===== */}
@@ -58,17 +96,17 @@ export default function EventDetails({onAttended}) {
         }}
       >
         
-        <IconButton onClick={() => navigate("/events")} size="small">
-                 <HomeIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
-               </IconButton>
+        <IconButton onClick={() => handleHomepage("/events")} size="small">
+            <HomeIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
+        </IconButton>
        
         <Box>
-          <IconButton onClick={() => navigate("/my-progress")} size="small">
-          <TuneIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
-        </IconButton>
-        <IconButton onClick={()=>handleLogout()} size="small">
-          <LogoutIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
-        </IconButton>
+          <IconButton onClick={() => handleProgressPage("/my-progress")} size="small">
+            <TuneIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
+          </IconButton>
+          <IconButton onClick={()=>handleLogout("/")} size="small">
+            <LogoutIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
+          </IconButton>
         </Box>
       </Box>
 
@@ -167,23 +205,42 @@ export default function EventDetails({onAttended}) {
 
         {/* ===== Buttons ===== */}
         <Box sx={{ width: "100%", maxWidth: 350, mx: "auto" }}>
-          <Button
-            fullWidth
-            variant="contained"
-            sx={{
-              mb: 2,
-              backgroundColor: "#FFC629",
-              color: "black",
-              fontWeight: "bold",
-              borderRadius: "20px",
-              "&:hover": { backgroundColor: "#e6b400" },
-            }}
-            onClick={() => handleAttented(eventToDisplay.id,eventToDisplay.title)}
-          >
-            Mark Attended
-          </Button>
+          {(attendence === undefined) ? 
+            (<Button
+              fullWidth
+              variant="contained"
+              sx={{
+                mb: 2,
+                backgroundColor: "#FFC629",
+                color: "black",
+                fontWeight: "bold",
+                borderRadius: "20px",
+                "&:hover": { backgroundColor: "#e6b400" },
+              }}
+              onClick={() => handleAttented(eventToDisplay.id,eventToDisplay.title)}
+            >
+            I'm here
+            </Button>
 
-          <Button
+           ):(
+            <Button
+              fullWidth
+              variant="contained"
+              sx={{
+                mb: 2,
+                backgroundColor: "#41340eff",
+                color: "black",
+                fontWeight: "bold",
+                borderRadius: "20px",
+                "&:hover": { backgroundColor: "#41340eff" },
+              }}
+            >
+            Checked in!
+            </Button>
+           )}
+
+        
+          {/* <Button
             fullWidth
             variant="contained"
             sx={{
@@ -196,7 +253,7 @@ export default function EventDetails({onAttended}) {
             onClick={() => alert("RSVP confirmed (demo only)!")}
           >
             RSVP
-          </Button>
+          </Button> */}
 
           <Button
             variant="text"

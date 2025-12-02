@@ -24,76 +24,63 @@ import axios from "axios";
 import KSUBanner from "../assets/ksubanner2.jpg";
 import { set } from "date-fns";
 
-export default function Progress({newLoading,totalEvents,progressCount,attentedList}) {
-// console.log(totalEvents);
-// console.log(progressCount);
-// console.log(attentedList);
-// console.log(newLoading);
-  
-const isMobile = useMediaQuery("(max-width:600px)");
-
+export default function Progress({totalEvents,progressCount,attentedList}) {
+  console.log(totalEvents);
+  console.log(progressCount);
   const navigate = useNavigate();
- const handleLogout = () =>{
-      localStorage.removeItem('userToken');
-      localStorage.removeItem('userId');
-      navigate("/");
-    }
-  const [fadeIn, setFadeIn] = useState(false);
-  const [loading, setLoading] = useState(newLoading);
-  
-  const [progressData, setProgressData] = useState({
-    totalEvents: 0, //total of events in the db
-    completed: 0, //quantity i click attended
-    attendedEvents: [], 
-    milestones: [{title:"Bronze Milestone",description:"Attend 3 events", achieved: progressCount>=3 ? (true):(false)},
-      {title:"Silver Milestone",description:"Attend 5 events", achieved: progressCount>=5 ? (true):(false)},
-      {title:"Gold Milestone",description:"Attend 10 events", achieved:progressCount>=10 ? (true):(false)}
-    ],
-  });
+  const isMobile = useMediaQuery("(max-width:600px)");
 
-  const [totalEvents2,setTotalEvent2] = useState(0);
-  const [completed,setCompleted] = useState(0);
-  const [attendedEvents2,setAttentedEvents2] = useState([]);
+  const [fadeIn, setFadeIn] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  //The menu bar actions
+  const handleHomepage = (path) =>{
+      navigate(path);
+      window.location.reload(); 
+    }
+  const handleProgressPage = (path) =>{
+      navigate(path);
+      window.location.reload(); 
+    }
+   const handleLogout = (path) =>{
+      sessionStorage.removeItem('userToken');
+      sessionStorage.removeItem('userId');
+      navigate(path);
+      window.location.reload(); 
+    }
+    
+    //make sure the user is logged in
+    const checkLogin = () => {
+      if(!sessionStorage.getItem('userToken')){navigate("/");}
+    };
+
+ 
   const [milestones,setMileStones] =useState([{title:"Bronze Milestone",description:"Attend 3 events", achieved: progressCount>=3 ? (true):(false)},
       {title:"Silver Milestone",description:"Attend 5 events", achieved: progressCount>=5 ? (true):(false)},
-      {title:"Gold Milestone",description:"Attend 10 events", achieved:progressCount>=10 ? (true):(false)}
+      {title:"Gold Milestone",description:"Attend 10 events", achieved:progressCount>=10 ? (true):(false)},
+      {title:"Gold Milestone",description:"Attend 10 events", achieved:progressCount>=10 ? (true):(false)},
+      {title:"Gold Milestone",description:"Attend 10 events", achieved:progressCount>=10 ? (true):(false)},
+      {title:"Gold Milestone",description:"Attend 10 events", achieved:progressCount>=10 ? (true):(false)},
+      {title:"Gold Milestone",description:"Attend 10 events", achieved:progressCount>=10 ? (true):(false)},
+      {title:"Gold Milestone",description:"Attend 10 events", achieved:progressCount>=10 ? (true):(false)},
+      
+    
     ]);
 
   
 
   useEffect(() => {
-    // setProgressData({totalEvents:totalEvents, completed:progressCount,attendedEvents:attentedList});
-    console.log("koko");
-    setTotalEvent2(totalEvents);
-    setCompleted(2);
-    setAttentedEvents2(attentedList);
+    checkLogin();
+    setLoading(false);
+   
     const timer = setTimeout(() => setFadeIn(true), 150);
     return () => clearTimeout(timer);
   }, []);
 
-//   useEffect(() => {
-//     const fetchProgress = async () => {
-//       try {
-//         // Replace "123" with dynamic logged-in student ID
-//         const response = await axios.get(`${BASE_URL}/api/progress/123`);
-//         setProgressData(response.data);
-//       } catch (err) {
-//         console.error("Error fetching progress:", err);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
 
-//     fetchProgress();
-//   }, []);
-
-  // const progress =
-  //   progressData.totalEvents2 > 0
-  //     ? (progressData.completed2 / progressData.totalEvents2) * 100
-  //     : 0;
   const progress =
-    totalEvents2 > 0
-      ? (completed / totalEvents2) * 100
+    totalEvents> 0
+      ? (progressCount / totalEvents) * 100
       : 0;
 
   return (
@@ -114,19 +101,21 @@ const isMobile = useMediaQuery("(max-width:600px)");
           zIndex: 1000,
         }}
       >
-        <IconButton onClick={() => navigate("/events")} size="small">
+        <IconButton onClick={() => handleHomepage("/events")} size="small">
           <HomeIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
         </IconButton>
         <Box>
-          <IconButton onClick={() => navigate("/my-progress")} size="small">
-                    <TuneIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
-                  </IconButton>
-          <IconButton onClick={()=>handleLogout()} size="small">
+          <IconButton onClick={() => handleProgressPage("/my-progress")} size="small">
+          <TuneIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
+              </IconButton>
+          <IconButton onClick={()=>handleLogout("/")} size="small">
           <LogoutIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
         </IconButton>
         </Box>
         
       </Box>
+
+
       <Fade in={fadeIn} timeout={1000}>
         <Box sx={{ position: "relative", width: "100%" }}>
           <Box
@@ -186,7 +175,7 @@ const isMobile = useMediaQuery("(max-width:600px)");
           <Typography sx={{ mt: 1, color: "#FFC629" }}>
             {loading
               ? "Loading..."
-              : `${completed} of ${totalEvents2} events attended`}
+              : `${progressCount} of ${totalEvents} events attended`}
           </Typography>
         </Box>
       </Fade>
@@ -250,12 +239,12 @@ const isMobile = useMediaQuery("(max-width:600px)");
             <Typography sx={{ color: "#bbb", textAlign: "center" }}>
               Loading events...
             </Typography>
-          ) : attendedEvents2.length === 0 ? (
+          ) : attentedList.length === 0 ? (
             <Typography sx={{ color: "#bbb", textAlign: "center" }}>
               No events attended yet.
             </Typography>
           ) : (
-            attendedEvents2.map((event, idx) => (
+            attentedList.map((event, idx) => (
               <Box
                 key={idx}
                 sx={{
@@ -268,7 +257,6 @@ const isMobile = useMediaQuery("(max-width:600px)");
                 }}
               >
                 <Typography sx={{ fontWeight: "bold", color: "#FFC629" }}>
-                  
                   {event.event_title.toUpperCase()}
                 </Typography>
               </Box>

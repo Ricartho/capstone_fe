@@ -21,8 +21,8 @@ export const registerUser = async(fName,lName,email,password) => {
 export const loginUser = async (email,password) => {
   try{
     const resp =  await API.post('/auth/login',{email,password});
-    localStorage.setItem('userToken',resp.data.access_token);
-    localStorage.setItem('userId',resp.data.user_id);
+    sessionStorage.setItem('userToken',resp.data.access_token);
+    sessionStorage.setItem('userId',resp.data.user_id);
     return await resp.data;
   }catch(error){
     return  error;

@@ -22,27 +22,42 @@ import LogoutIcon from '@mui/icons-material/Logout';
 
 export default function EventsPage({eventsList,loading}) {
 
-
-
   const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width:600px)");
 
  
+  //The menu bar actions
+    const handleHomepage = (path) =>{
+      navigate(path);
+      window.location.reload(); 
+    }
+    const handleProgressPage = (path) =>{
+      navigate(path);
+      window.location.reload(); 
+    }
+    const handleLogout = (path) =>{
+      sessionStorage.removeItem('userToken');
+      sessionStorage.removeItem('userId');
+      navigate(path);
+      window.location.reload(); 
+    }
+    //
+
 
   const handleShow = (id) =>{
       console.log(id); 
       navigate(`/eventdetails/${id}`);
     };
-
-    const handleLogout = () =>{
-      localStorage.removeItem('userToken');
-      localStorage.removeItem('userId');
-      navigate("/");
-    }
+    
+    //make sure the user is logged in
+    const checkLogin = () => {
+      if(!sessionStorage.getItem('userToken')){navigate("/");}
+    };
 
     useEffect(()=>{
-      console.log("koko");
+     checkLogin();
     },[]);
+    
   return (
     <>
       {/* =====  Header Bar ===== */}
@@ -61,16 +76,17 @@ export default function EventsPage({eventsList,loading}) {
           zIndex: 1000,
         }}
       >
-        <IconButton onClick={() => navigate("/events")} size="small">
+        <IconButton onClick={() => handleHomepage("/events")} size="small">
           <HomeIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
         </IconButton>
+
+        {/* <Typography>You are {sessionStorage.getItem('userId')}</Typography> */}
+
        <Box>
-        <IconButton onClick={() => navigate("/my-progress")} size="small">
+        <IconButton onClick={() => handleProgressPage("/my-progress")} size="small">
           <TuneIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
         </IconButton>
-       
-
-        <IconButton onClick={()=>handleLogout()} size="small">
+        <IconButton onClick={()=>handleLogout("/")} size="small">
           <LogoutIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
         </IconButton>
         </Box>
