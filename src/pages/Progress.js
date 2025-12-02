@@ -25,10 +25,10 @@ import KSUBanner from "../assets/ksubanner2.jpg";
 import { set } from "date-fns";
 
 export default function Progress({newLoading,totalEvents,progressCount,attentedList}) {
-console.log(totalEvents);
-console.log(progressCount);
-console.log(attentedList);
-console.log(newLoading);
+// console.log(totalEvents);
+// console.log(progressCount);
+// console.log(attentedList);
+// console.log(newLoading);
   
 const isMobile = useMediaQuery("(max-width:600px)");
 
@@ -63,8 +63,9 @@ const isMobile = useMediaQuery("(max-width:600px)");
 
   useEffect(() => {
     // setProgressData({totalEvents:totalEvents, completed:progressCount,attendedEvents:attentedList});
+    console.log("koko");
     setTotalEvent2(totalEvents);
-    setCompleted(progressCount);
+    setCompleted(2);
     setAttentedEvents2(attentedList);
     const timer = setTimeout(() => setFadeIn(true), 150);
     return () => clearTimeout(timer);
@@ -185,7 +186,7 @@ const isMobile = useMediaQuery("(max-width:600px)");
           <Typography sx={{ mt: 1, color: "#FFC629" }}>
             {loading
               ? "Loading..."
-              : `${completed} of ${totalEvents} events attended`}
+              : `${completed} of ${totalEvents2} events attended`}
           </Typography>
         </Box>
       </Fade>

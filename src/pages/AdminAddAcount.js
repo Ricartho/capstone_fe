@@ -5,6 +5,7 @@ import axios from "axios";
 //MUI
 import HomeIcon from "@mui/icons-material/Home";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import LogoutIcon from '@mui/icons-material/Logout';
 import {
   Box,
   Typography,
@@ -89,7 +90,7 @@ const handleLogout = () =>{
               ADMIN DASHBOARD
             </Typography>
             <IconButton onClick={()=>handleLogout()}>
-              <AccountCircleIcon sx={{ color: "white", fontSize: isMobile ? 24 : 28 }} />
+              <LogoutIcon sx={{ color: "white", fontSize: isMobile ? 24 : 28 }} />
             </IconButton>
           </Box>
 

@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{useState,useEffect} from "react";
 import { format } from 'date-fns';
 
 
@@ -40,6 +40,9 @@ export default function EventsPage({eventsList,loading}) {
       navigate("/");
     }
 
+    useEffect(()=>{
+      console.log("koko");
+    },[]);
   return (
     <>
       {/* =====  Header Bar ===== */}

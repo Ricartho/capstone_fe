@@ -16,6 +16,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import LockIcon from "@mui/icons-material/Lock";
+import LogoutIcon from '@mui/icons-material/Logout';
 
 
 
@@ -69,7 +70,7 @@ export default function AdminViewAccounts({usersList,onDelete}) {
           ADMIN
         </Typography>
         <IconButton size="small" onClick={()=>handleLogout()} >
-          <AccountCircleIcon sx={{ color: "white" }} />
+          <LogoutIcon sx={{ color: "white" }} />
         </IconButton>
       </Box>
 

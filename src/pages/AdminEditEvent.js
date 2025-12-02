@@ -9,6 +9,7 @@ import dayjs from "dayjs";
 import HomeIcon from "@mui/icons-material/Home";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import LogoutIcon from '@mui/icons-material/Logout';
 
 import {
   Box,
@@ -106,7 +107,7 @@ export default function AdminEditEvent({onEdit}) {
           ADMIN DASHBOARD
         </Typography>
         <IconButton onClick={()=>handleLogout()} >
-          <AccountCircleIcon sx={{ color: "white", fontSize: isMobile ? 24 : 28 }} />
+          <LogoutIcon sx={{ color: "white", fontSize: isMobile ? 24 : 28 }} />
         </IconButton>
       </Box>
         {/* Title Only */}

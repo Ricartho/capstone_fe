@@ -13,6 +13,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from '@mui/icons-material/Delete';
 import DownloadIcon from "@mui/icons-material/Download";
+import LogoutIcon from '@mui/icons-material/Logout';
 import {
   Box,
   Typography,
@@ -85,7 +86,7 @@ export default function AdminDashboard({eventsList,onDelete}) {
           ADMIN DASHBOARD
         </Typography>
         <IconButton onClick={()=>handleLogout()}>
-          <AccountCircleIcon sx={{ color: "white", fontSize: isMobile ? 24 : 28 }} />
+          <LogoutIcon sx={{ color: "white", fontSize: isMobile ? 24 : 28 }} />
         </IconButton>
       </Box>
 

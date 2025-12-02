@@ -27,11 +27,12 @@ export default function Login({onSignIn}) {
   const handleSubmit = async(e) => {
 
     e.preventDefault();
-
+    console.log("dsds");
     setError("");
 
     if (!email.trim() || !password.trim()) {
       setError("All fields are required.");
+      console.log("dsds");
       return;
      }
 
@@ -39,6 +40,7 @@ export default function Login({onSignIn}) {
 
     if(!response.access_token){
         setError("Email or/and password is incorrect");
+        console.log("dsds");
         return;
     }else{
         setEmail("");

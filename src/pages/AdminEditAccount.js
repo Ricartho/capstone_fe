@@ -3,6 +3,7 @@ import { useNavigate, useParams ,useLoaderData} from "react-router-dom";
 import axios from "axios";
 import HomeIcon from "@mui/icons-material/Home";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import LogoutIcon from '@mui/icons-material/Logout';
 
 import {
   Box,
@@ -140,7 +141,7 @@ const handleCancel = () => {
           ADMIN DASHBOARD
         </Typography>
         <IconButton onClick={()=>handleLogout()} >
-          <AccountCircleIcon sx={{ color: "white", fontSize: isMobile ? 24 : 28 }} />
+          <LogoutIcon sx={{ color: "white", fontSize: isMobile ? 24 : 28 }} />
         </IconButton>
       </Box>
       {/* ===== Page Title ===== */}

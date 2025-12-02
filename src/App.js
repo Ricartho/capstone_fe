@@ -57,6 +57,7 @@ import AdminEditAccount from './pages/AdminEditAccount';
       const loadEvents = async () => {
         try{
           const data = await getEvents();
+          console.log(data);
           if (isMounted){ 
             setEvents(data);
           }
@@ -71,6 +72,7 @@ import AdminEditAccount from './pages/AdminEditAccount';
         try{
           if(isMounted){
             const data = await getUsers();
+            console.log(data);
             setUsers(data)
           }
           
@@ -79,11 +81,14 @@ import AdminEditAccount from './pages/AdminEditAccount';
         }
       };
 
+
+      //rele yo nan progress
       const loadCountAttented = async() => {
         const currentUserId = localStorage.getItem('userId');
         try{
           if(isMounted){
             const res = await progressCount(currentUserId);
+            console.log(res);
             setEventsAttentedCount(res);
           }
         }catch(err){
@@ -96,6 +101,7 @@ import AdminEditAccount from './pages/AdminEditAccount';
         try{
           if(isMounted){
             const res = await progressList(currentUserId);
+            console.log(res);
             setAttentedList(res);
           }
         }catch(err){
