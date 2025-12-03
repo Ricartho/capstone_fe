@@ -128,7 +128,7 @@ body {
 /* ===== TOP NAVBAR ===== */
 .top-navbar {
   width: 100%;
-  background-color: #f4b400;
+  /*background-color: #f4b400;*/
   display: flex;
   justify-content: center;
   gap: 40px;

@@ -9,12 +9,13 @@ export default function KSUStudentPortal() {
 
       
       <div className="top-navbar">
-        <button>LOGIN</button>
-        <button>SIGN UP</button>
-        <button>EVENTS</button>
-        <button>DASHBOARD</button>
-        <button>PROGRESS</button>
-      </div>
+  <div className="btn-style">DISCOVER</div>
+  <div className="btn-style">YOUR</div>
+  <div className="btn-style">PASSION</div>
+  <div className="btn-style">AND</div>
+  <div className="btn-style">PURPOSE</div>
+</div>
+
 
       {/* Background Hero Section */}
       <div className="hero-section">
