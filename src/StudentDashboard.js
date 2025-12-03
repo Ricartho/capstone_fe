@@ -5,68 +5,87 @@ export default function KSUStudentPortal() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="laptop-container">
-      {/* Header */}
-      <header className="header">
-        <img
-          src="https://upload.wikimedia.org/wikipedia/en/8/8a/Kennesaw_State_University_logo.svg"
-          alt="KSU Logo"
-          className="logo"
-        />
-        <div className="user-icon">👤</div>
-      </header>
+    <div>
 
-      {/* Main Content */}
-      <main className="content">
-        <h2 className="section-title">TODAY'S DASHBOARD</h2>
+      
+      <div className="top-navbar">
+        <button>LOGIN</button>
+        <button>SIGN UP</button>
+        <button>EVENTS</button>
+        <button>DASHBOARD</button>
+        <button>PROGRESS</button>
+      </div>
 
-        {/* Container for all cards */}
-        <div className="card-row">
-          <button className="card">
-            <div className="icon">💻</div>
-            <h3>10</h3>
-            <p>Upcoming Events</p>
-          </button>
+      {/* Background Hero Section */}
+      <div className="hero-section">
+        <h1 className="hero-title">STUDENT DASHBOARD</h1>
+      </div>
 
-          <button className="card">
-            <div className="icon">📚</div>
-            <h3>3</h3>
-            <p>Current Courses</p>
-          </button>
 
-          <button className="card">
-            <div className="icon">🎉</div>
-            <h3>5</h3>
-            <p>Events Attended</p>
-          </button>
+      
 
-          <button className="card">
-            <div className="icon">🏆</div>
-            <h3>2</h3>
-            <p>Milestones</p>
-          </button>
-        </div>
+      <div className="laptop-container">
+        {/* Header */}
+        <header className="header">
+          <img
+src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQslP-43IzwPKp8VMowyF9lem-rV8tdCxTS8Q&s"            alt="KSU Logo"
+            className="logo"
+          />
+          <div className="user-icon">👤</div>
+        </header>
 
-        {/* Banner */}
-        <div className="path-banner">PATH TO FLEDGLINGS!!</div>
+        {/* Main Content */}
+        <main className="content">
+          <h2 className="section-title">TODAY'S DASHBOARD</h2>
 
-        {/* Accordion */}
-        <div className="accordion">
-          <button className="accordion-header" onClick={() => setOpen(!open)}>
-            Degree Progress
-            <span className="arrow">{open ? "▲" : "▼"}</span>
-          </button>
+          {/* Container for all cards */}
+          <div className="card-row">
+            <button className="card">
+              <div className="icon">💻</div>
+              <h3>10</h3>
+              <p>Upcoming Events</p>
+            </button>
 
-          {open && (
-            <div className="accordion-content">
-              <button>GPA</button>
-              <button>Foundation Courses</button>
-              <button>Major Courses</button>
-              <button>Registration Checklist</button>
-            </div>
-          )}
-        </div>
-      </main>
+            <button className="card">
+              <div className="icon">📚</div>
+              <h3>3</h3>
+              <p>Current Courses</p>
+            </button>
+
+            <button className="card">
+              <div className="icon">🎉</div>
+              <h3>5</h3>
+              <p>Events Attended</p>
+            </button>
+
+            <button className="card">
+              <div className="icon">🏆</div>
+              <h3>2</h3>
+              <p>Milestones</p>
+            </button>
+          </div>
+
+          {/* Banner */}
+          <div className="path-banner">PATH TO FLEDGLINGS!!</div>
+
+          {/* Accordion */}
+          <div className="accordion">
+            <button className="accordion-header" onClick={() => setOpen(!open)}>
+              Degree Progress
+              <span className="arrow">{open ? "▲" : "▼"}</span>
+            </button>
+
+            {open && (
+              <div className="accordion-content">
+                <button>GPA</button>
+                <button>Foundation Courses</button>
+                <button>Major Courses</button>
+                <button>Registration Checklist</button>
+              </div>
+            )}
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
