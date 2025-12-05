@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Box, Typography, TextField, Button, Alert, Fade } from "@mui/material";
 import KSUBanner from "../assets/ksubanner2.jpg";
-import { set } from "date-fns";
+
 
 
 
@@ -20,6 +20,8 @@ export default function SignUp({onSignUp}) {
   const [fadeIn, setFadeIn] = useState(false);
 
 
+  //REGEX to ensure email format
+   const myRegex = /[A-Za-z0-9]+@[A-Za-z]+\.kennesaw\.edu/;
   
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,6 +32,11 @@ export default function SignUp({onSignUp}) {
       return;
     }
 
+    //  if(!myRegex.test(email)){
+    //   setError("Only KSU emails are accepted,make sure the format is kennesaw.edu");
+    //   return;
+    //  }
+
     if (password !== confirmPassword) {
       setError("Passwords do not match.");
       return;
@@ -37,8 +44,9 @@ export default function SignUp({onSignUp}) {
 
     
    const response = await onSignUp(fName,lName,email,password);
+    console.log(response);
    if(!response.id){
-       setError("Error while create account, please try again");
+       setError("Error while creating account, please try again");
       return;
    }else{
       setSubmitted(true);
@@ -263,7 +271,7 @@ export default function SignUp({onSignUp}) {
                 fontWeight: "bold",
               }}
             >
-              Account created successfully! Please return to log in.
+              Account created successfully! Please Check your email for a verification link..
             </Alert>
           )}
 

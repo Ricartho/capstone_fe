@@ -24,7 +24,7 @@ import axios from "axios";
 import KSUBanner from "../assets/ksubanner2.jpg";
 import { set } from "date-fns";
 
-export default function Progress({totalEvents,progressCount,attentedList}) {
+export default function Progress({totalEvents,progressCount,attentedList,milestones}) {
   console.log(totalEvents);
   console.log(progressCount);
   const navigate = useNavigate();
@@ -53,24 +53,10 @@ export default function Progress({totalEvents,progressCount,attentedList}) {
     const checkLogin = () => {
       if(!sessionStorage.getItem('userToken')){navigate("/");}
     };
-
- 
-  const [milestones,setMileStones] =useState([{title:"Bronze Milestone",description:"Attend 3 events", achieved: progressCount>=3 ? (true):(false)},
-      {title:"Silver Milestone",description:"Attend 5 events", achieved: progressCount>=5 ? (true):(false)},
-      {title:"Gold Milestone",description:"Attend 10 events", achieved:progressCount>=10 ? (true):(false)},
-      {title:"Gold Milestone",description:"Attend 10 events", achieved:progressCount>=10 ? (true):(false)},
-      {title:"Gold Milestone",description:"Attend 10 events", achieved:progressCount>=10 ? (true):(false)},
-      {title:"Gold Milestone",description:"Attend 10 events", achieved:progressCount>=10 ? (true):(false)},
-      {title:"Gold Milestone",description:"Attend 10 events", achieved:progressCount>=10 ? (true):(false)},
-      {title:"Gold Milestone",description:"Attend 10 events", achieved:progressCount>=10 ? (true):(false)},
-      
-    
-    ]);
-
   
 
   useEffect(() => {
-    checkLogin();
+    // checkLogin();
     setLoading(false);
    
     const timer = setTimeout(() => setFadeIn(true), 150);
@@ -194,28 +180,28 @@ export default function Progress({totalEvents,progressCount,attentedList}) {
               <Grid item xs={12} sm={4} key={i}>
                 <Card
                   sx={{
-                    backgroundColor: m.achieved ? "#1e1e1e" : "#111",
-                    border: `2px solid ${m.achieved ? m.color : "#444"}`,
-                    color: m.achieved ? "white" : "#888",
+                    backgroundColor: progressCount >= m.criteria ? "#1e1e1e" : "#111",
+                    border: `2px solid ${progressCount >= m.criteria ? "#ffc400": "#444"}`,
+                    color: progressCount >= m.criteria ? "white" : "#888",
                     textAlign: "center",
                     borderRadius: "14px",
                     boxShadow: "0 4px 12px rgba(0,0,0,0.4)",
                   }}
                 >
-                  <CardContent>
+                  <CardContent >
                     <Typography
                       variant="h6"
                       sx={{
-                        color: m.achieved ? m.color : "#888",
+                        color: progressCount >= m.criteria ? "#ffc400" : "#888",
                         fontWeight: "bold",
                         mb: 1,
                       }}
                     >
-                      {m.title} Milestone
+                      {m.title.toUpperCase()} Milestone
                     </Typography>
-                    <Typography variant="body2">{m.description}</Typography>
+                    <Typography variant="body2">Attend {m.criteria} Events</Typography>
                     <Typography sx={{ mt: 1 }}>
-                      {m.achieved ? "✔️ Achieved!" : "In Progress..."}
+                      {progressCount >= m.criteria ? "✔️ Achieved!" : "In Progress..."}
                     </Typography>
                   </CardContent>
                 </Card>
@@ -232,7 +218,7 @@ export default function Progress({totalEvents,progressCount,attentedList}) {
             variant="h6"
             sx={{ color: "#FFC629", mb: 2, textAlign: "center", fontWeight: 700 }}
           >
-            Attended Events
+            Your attended events list 
           </Typography>
 
           {loading ? (

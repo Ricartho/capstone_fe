@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useParams } from "react-router-dom";
 import {
   Box,
   Card,
@@ -8,73 +8,48 @@ import {
   TextField,
   Button,
   Fade,
-  Alert
 } from "@mui/material";
 import KSUBanner from "../assets/ksubanner2.jpg";
-import axios from "axios";
 
-
-
-export default function Login({onSignIn}) {
+export default function UpdatePassword({onUpdatePass}) {
+    
+ const { token } = useParams();
+console.log(token);
 
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [fadeIn, setFadeIn] = useState(false);
 
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
 
-  //REGEX to ensure email format
-   const myRegex = /[A-Za-z0-9]+@[A-Za-z]+\.kennesaw\.edu/;
-
-   const handleSubmit = async(e) => {
-
-    e.preventDefault();
-    console.log("Login action reached");
-    setError("");
-
-    if (!email.trim() || !password.trim()) {
-      setError("All fields are required.");
-      return;
-     }
-
-    //  if(!myRegex.test(email)){
-    //   setError("Only KSU emails are accepted,make sure the format is kennesaw.edu");
-    //   return;
-    //  }
-
-    const response = await onSignIn(email,password);
-     console.log(response);
-     if(!response.active){
-         setError("This account is not activated yet or not exsited, please verify your email for the verification link.");
-        return;
-     }
-
-    if(!response.access_token){
-        setError("Email or/and password is incorrect");
-        return;
-    }else{
-        setEmail("");
-        setPassword("");
-        if(response.user_admin){
-          navigate("/admin")
-        }else{
-          navigate("/events");
-        }
-        
-    }
-  };
-
-   useEffect(() => {
+  useEffect(() => {
     const timer = setTimeout(() => setFadeIn(true), 150);
     return () => clearTimeout(timer);
   }, []);
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setError("");
+    
+
+    if (!password || !confirmPassword) {
+      setError("Please fill in both fields.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+    onUpdatePass(token,password);
+    // alert("Password updated successfully. You can now sign in.");
+    // navigate("/");
+  };
 
   return (
-   
     <>
-      {/* ===== Banner ===== */}
+      {/* Banner */}
       <Fade in={fadeIn} timeout={1000}>
         <Box sx={{ position: "relative", width: "100%" }}>
           <Box
@@ -85,43 +60,37 @@ export default function Login({onSignIn}) {
               width: "100%",
               height: { xs: 200, sm: 250, md: 300 },
               objectFit: "cover",
-              objectPosition: "center 58%",
-              display: "block",
+              objectPosition: "center 55%",
             }}
           />
-
           <Box
             sx={{
               position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
+              inset: 0,
               background:
                 "linear-gradient(to bottom, rgba(0,0,0,0.45), rgba(0,0,0,0.45))",
             }}
           />
-
           <Typography
             variant="h5"
             sx={{
               position: "absolute",
-              left: "50%",
               top: "50%",
+              left: "50%",
               transform: "translate(-50%, -50%)",
               color: "white",
               fontWeight: 800,
               letterSpacing: "0.05em",
-              textAlign: "center",
               textShadow: "0 3px 10px rgba(0,0,0,0.7)",
+              textAlign: "center",
             }}
           >
-            LOGIN
+            UPDATE PASSWORD
           </Typography>
         </Box>
       </Fade>
 
-      {/* ===== Login Card ===== */}
+      {/* Card */}
       <Fade in={fadeIn} timeout={1600}>
         <Box
           sx={{
@@ -142,13 +111,11 @@ export default function Login({onSignIn}) {
               maxWidth: 460,
               borderRadius: "20px",
               boxShadow: "0 8px 22px rgba(0,0,0,0.45)",
-              transition: "transform 0.3s ease",
-              "&:hover": { transform: "translateY(-3px)" },
             }}
           >
             <CardContent sx={{ p: { xs: 3, md: 4 } }}>
               <Typography
-                variant="h4"
+                variant="h5"
                 sx={{
                   color: "#FFC629",
                   fontWeight: 800,
@@ -157,17 +124,17 @@ export default function Login({onSignIn}) {
                   textAlign: "center",
                 }}
               >
-                Sign In
+                Enter New Password
               </Typography>
 
               <form onSubmit={handleSubmit}>
                 <TextField
                   fullWidth
-                  label="KSU Email"
+                  label="New Password"
                   variant="standard"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   sx={{
                     mb: 3,
                     input: { color: "white" },
@@ -187,13 +154,13 @@ export default function Login({onSignIn}) {
 
                 <TextField
                   fullWidth
-                  label="Password"
+                  label="Confirm New Password"
                   variant="standard"
                   type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   sx={{
-                    mb: 4,
+                    mb: 3,
                     input: { color: "white" },
                     label: { color: "#bbb" },
                     "& .MuiInput-underline:before": {
@@ -209,6 +176,15 @@ export default function Login({onSignIn}) {
                   required
                 />
 
+                {error && (
+                  <Typography
+                    variant="body2"
+                    sx={{ color: "#ff6b6b", mb: 2, textAlign: "center" }}
+                  >
+                    {error}
+                  </Typography>
+                )}
+
                 <Button
                   type="submit"
                   fullWidth
@@ -222,51 +198,26 @@ export default function Login({onSignIn}) {
                     "&:hover": { backgroundColor: "#e6b400" },
                   }}
                 >
-                  Log In
+                  Save New Password
                 </Button>
               </form>
-               {error && (
-                  <Alert severity="error" sx={{ mt: 3, backgroundColor: "#2a0000", color: "#ff8080" }}>
-                      {error}
-                  </Alert>
-                )}
 
               <Typography
                 variant="body2"
-                sx={{ mt: 3, textAlign: "center", color: "#ccc" }}
-              >
-                Don’t have an account?{" "}
-                <span
-                  onClick={() => navigate("/signup")}
-                  style={{
-                    color: "#FFC629",
-                    fontWeight: 700,
-                    cursor: "pointer",
-                  }}
-                >
-                  Sign up
-                </span>
-              </Typography>
-                  <Typography
-                variant="body2"
                 sx={{
-                  mt: 2,
+                  mt: 3,
                   textAlign: "center",
-                  color: "#FFC629",
-                  fontWeight: 700,
+                  color: "#ccc",
                   cursor: "pointer",
-                  "&:hover": { color: "#e6b400" },
                 }}
-                onClick={() => window.open("/forgot-password","_blank")}
+                onClick={() => navigate("/")}
               >
-                Forgot Password?
+                ← Back to Login
               </Typography>
             </CardContent>
           </Card>
         </Box>
       </Fade>
-      </>
-    
+    </>
   );
 }
-

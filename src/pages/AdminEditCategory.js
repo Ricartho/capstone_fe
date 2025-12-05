@@ -18,15 +18,14 @@ import {
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import LockIcon from "@mui/icons-material/Lock";
 
-const BASE_URL = process.env.REACT_APP_API_URL || "";
 
-export default function AdminEditAccount({onEdit}) {
+export default function AdminEditCategory({onEdit}) {
 
   const isMobile = useMediaQuery("(max-width:600px)");
 
   //The event from the API, served by the loader on App.js
-  const userToEdit = useLoaderData();
-  console.log(userToEdit);
+  const categoryToEdit = useLoaderData();
+  console.log(categoryToEdit);
 
   const navigate = useNavigate();
 
@@ -37,14 +36,13 @@ export default function AdminEditAccount({onEdit}) {
   const [error, setError] = useState("");
 
   const [formData, setFormData] = useState({
-    fName: userToEdit.fName,
-    lName: userToEdit.lName,
-    email: userToEdit.email,
-    admin: userToEdit.admin,
+    title: categoryToEdit.title,
+    uniqCode: categoryToEdit.uniqCode,
+    description: categoryToEdit.description,
   });
 
 const handleCancel = () => {
-    navigate("/admin/view-accounts");
+    navigate("/admin/view-category");
   };
 
   const handleChange = (e) => {
@@ -57,20 +55,20 @@ const handleCancel = () => {
     // e.preventDefault()
     setError("");
       console.log('user to updatet',formData);
-    if (!formData.fName || !formData.lName || !formData.email) {
+    if (!formData.title || !formData.uniqCode || !formData.description) {
       setError("Please fill out all required fields.");
       return;
     }
 
     const payload = {
-      fName: formData.fName,
-      lName: formData.lName,
-      email: formData.email,
-      admin: formData.admin,
+      title: formData.title,
+      uniqCode: formData.uniqCode,
+      description: formData.description
+     
     };
 
-    onEdit(userToEdit.id,payload);
-    navigate("/admin/view-accounts");
+    onEdit(categoryToEdit.id,payload);
+    navigate("/admin/view-category");
   };
 
   
@@ -138,7 +136,7 @@ const handleCancel = () => {
       <Box sx={{ textAlign: "center", mt: 4, mb: 2 }}>
         <LockIcon sx={{ fontSize: 40, color: "#FFC629", mb: 1 }} />
         <Typography variant="h6" sx={{ fontWeight: 600 }}>
-          Edit Account
+          Edit Category
         </Typography>
       </Box>
 
@@ -183,11 +181,11 @@ const handleCancel = () => {
         )}
 
         {/* First Name */}
-        <Typography sx={{ fontSize: 14,mb: 1 }}>First Name</Typography>
+        <Typography sx={{ fontSize: 14,mb: 1 }}>Category Name</Typography>
         <TextField
           required
-          name="fName"
-          value={formData.fName}
+          name="title"
+          value={formData.title}
           onChange={handleChange}
           variant="outlined"
           fullWidth
@@ -198,11 +196,11 @@ const handleCancel = () => {
         />
 
         {/* Last Name */}
-        <Typography sx={{ fontSize: 14,mb: 1  }}>Last Name</Typography>
+        <Typography sx={{ fontSize: 14,mb: 1  }}>Category Code</Typography>
         <TextField
           required
-          name="lName"
-          value={formData.lName}
+          name="uniqCode"
+          value={formData.uniqCode}
           onChange={handleChange}
           variant="outlined"
           fullWidth
@@ -213,12 +211,14 @@ const handleCancel = () => {
         />
 
         {/* Email */}
-        <Typography sx={{ fontSize: 14,mb: 1 }}>KSU Email</Typography>
+        <Typography sx={{ fontSize: 14,mb: 1 }}>Description</Typography>
         <TextField
           required
-          name="email"
-          value={formData.email}
+          name="description"
+          value={formData.description}
           onChange={handleChange}
+          multiline
+            rows={3}
           variant="outlined"
           fullWidth
           InputProps={{
@@ -227,24 +227,6 @@ const handleCancel = () => {
            sx={{ mb: 3,}}
         />
 
-        {/* Role */}
-        <Typography sx={{ fontSize: 14,mb: 1  }}>Role:</Typography>
-        <TextField
-          required
-          select
-          name="admin"
-          value={formData.admin}
-          onChange={handleChange}
-          variant="outlined"
-          fullWidth
-          InputProps={{
-            sx: { backgroundColor: "white", borderRadius: 1 },
-          }}
-          sx={{ mb: 3,}}
-        >
-         <MenuItem value="false">Student</MenuItem>
-         <MenuItem value="true">Faculty/Admin</MenuItem>
-        </TextField>
 
         <Button
           fullWidth
@@ -270,6 +252,7 @@ const handleCancel = () => {
             >
             CANCEL
           </Button>
+      
         </form>
       </Box>
     </>

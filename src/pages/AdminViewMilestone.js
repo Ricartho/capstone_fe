@@ -21,20 +21,20 @@ import LogoutIcon from '@mui/icons-material/Logout';
 
 
 
-export default function AdminViewAccounts({usersList,onDelete}) {
-
+export default function AdminViewMilestones({milestonesList,onDelete}) {
+    console.log(milestonesList);
    const isMobile = useMediaQuery("(max-width:600px)");
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [fadeIn] = useState(true);
 
  
-  const filteredUsers = usersList.filter((u) =>
-    u.lName.toLowerCase().includes(search.toLowerCase())
+  const filteredMilestones = milestonesList.filter((u) =>
+    u.title.toLowerCase().includes(search.toLowerCase())
   );
  
   const handleEdit = (id) => {
-    navigate(`/admin/edit-account/${id}`);
+    navigate(`/admin/edit-milestone/${id}`);
   };
   const handleDelete = (id) => {
     onDelete(id);
@@ -102,7 +102,7 @@ export default function AdminViewAccounts({usersList,onDelete}) {
         <Box sx={{ textAlign: "center", mt: 4, mb: 3 }}>
           <LockIcon sx={{ fontSize: 40, color: "#FFC629", mb: 1 }} />
           <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            View Accounts
+            View Milestones
           </Typography>
         </Box>
       </Fade>
@@ -136,13 +136,13 @@ export default function AdminViewAccounts({usersList,onDelete}) {
             borderRadius: "20px",
             "&:hover": { backgroundColor: "#e6b400" },
           }}
-          onClick={() => navigate("/admin/add-account")}
+          onClick={() => navigate("/admin/new-milestone")}
         >
-          ADD ACCOUNT
+          ADD Milestone
         </Button>
       </Box>
 
-      {/* ===== Account Cards ===== */}
+      {/* ===== Category Cards ===== */}
       <Paper
         sx={{
           width: "90%",
@@ -155,9 +155,9 @@ export default function AdminViewAccounts({usersList,onDelete}) {
           mb: 5,
         }}
       >
-        {filteredUsers.map((user) => (
+        {filteredMilestones.map((milestone) => (
           <Box
-            key={user._id}
+            key={milestone._id}
             sx={{
               display: "flex",
               alignItems: "center",
@@ -180,30 +180,24 @@ export default function AdminViewAccounts({usersList,onDelete}) {
                 textAlign: "center",
               }}
             >
-              {user.lName.toUpperCase()} {user.fName.toUpperCase()}
+              {milestone.title.toUpperCase()} 
             </Typography>
 
             <Box sx={{ display: "flex", gap: 1, ml: 1 }}>
               <IconButton
                 size="small"
                 sx={{ color: "#FFC629" }}
-                onClick={() => handleEdit(user._id)}
+                onClick={() => handleEdit(milestone._id)}
               >
                 <EditIcon fontSize="small" />
               </IconButton>
 
-              <IconButton
-                size="small"
-                sx={{ color: "#FFC629" }}
-                onClick={() => window.open("/forgot-password","_blank")}
-              >
-                <VpnKeyIcon fontSize="small" />
-              </IconButton>
+              
 
               <IconButton
                 size="small"
                 sx={{ color: "#FFC629" }}
-                onClick={() => handleDelete(user._id)}
+                onClick={() => handleDelete(milestone._id)}
               >
                 <DeleteIcon fontSize="small" />
               </IconButton>
@@ -238,7 +232,7 @@ export default function AdminViewAccounts({usersList,onDelete}) {
         }}
       >
         <Typography variant="body1" sx={{ color: "#FFC629" }}>
-          Total Users: {usersList.length}
+          Total Users: {milestonesList.length}
         </Typography>
         <Typography variant="body1" sx={{ color: "#FFC629" }}>
           Total Check-ins: 52(Static)

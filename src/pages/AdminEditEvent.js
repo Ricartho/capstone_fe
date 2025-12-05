@@ -1,4 +1,4 @@
-import React, {useState } from "react";
+import React, {useState,useEffect } from "react";
 import {useNavigate, useLoaderData } from "react-router-dom";
 import LockIcon from "@mui/icons-material/Lock";
 import { DatePicker, TimePicker } from "@mui/x-date-pickers";
@@ -18,22 +18,19 @@ import {
   Button,
   useMediaQuery,
   Paper,
-IconButton,
+  IconButton,
+ Select,
+  MenuItem
 } from "@mui/material";
 
 
 
-export default function AdminEditEvent({onEdit}) {
+export default function AdminEditEvent({categories,onEdit}) {
 
   //The event from the API, served by the loader on App.js
   const eventToEdit = useLoaderData();
   console.log(eventToEdit);
 
- const handleLogout = () =>{
-      localStorage.removeItem('userToken');
-      localStorage.removeItem('userId');
-      navigate("/");
-    }
   const isMobile = useMediaQuery("(max-width:600px)");
   const navigate = useNavigate();
 
@@ -47,6 +44,7 @@ export default function AdminEditEvent({onEdit}) {
    eventTimeEnd: dayjs().add(1, "hour"), 
    location: eventToEdit.location,
    description: eventToEdit.description, 
+   category: eventToEdit.category
   });
 
   const handleCancel = () => {
@@ -60,7 +58,7 @@ export default function AdminEditEvent({onEdit}) {
 
   const handleSubmit = async () => {
     setError("");
-    if (!event.title || !event.eventDate || !event.eventTimeStart || !event.eventTimeEnd || !event.location) {
+    if (!event.title || !event.eventDate || !event.eventTimeStart || !event.eventTimeEnd || !event.location|| !event.category) {
       setError("Please complete all required fields.");
       return;
    }
@@ -71,14 +69,38 @@ export default function AdminEditEvent({onEdit}) {
       eventTimeStart: event.eventTimeStart,
       eventTimeEnd: event.eventTimeEnd,
       location: event.location,
-      description: event.description
+      description: event.description,
+      category: event.category
     };
 
     onEdit(eventToEdit.id,payload);
     navigate("/admin");
   };
 
-
+   //The menu bar actions
+        const handleHomepage = (path) =>{
+          navigate(path);
+          window.location.reload(); 
+        }
+        const handleProgressPage = (path) =>{
+          navigate(path);
+          window.location.reload(); 
+        }
+        const handleLogout = (path) =>{
+          sessionStorage.removeItem('userToken');
+          sessionStorage.removeItem('userId');
+          navigate(path);
+          window.location.reload(); 
+        }
+        //
+         //make sure the user is logged in
+        const checkLogin = () => {
+            if(!sessionStorage.getItem('userToken')){navigate("/");}
+        };
+        
+        useEffect(()=>{
+            //  checkLogin();
+           },[]);
 
   return (
       <>
@@ -97,18 +119,23 @@ export default function AdminEditEvent({onEdit}) {
           zIndex: 1000,
         }}
       >
-        <IconButton onClick={()=>navigate("/admin")}>
-          <HomeIcon sx={{ color: "white", fontSize: isMobile ? 24 : 28 }} />
+       <IconButton onClick={() => handleHomepage("/admin")} size="small">
+          <HomeIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
         </IconButton>
-        <Typography
-          variant={isMobile ? "h6" : "h5"}
-          sx={{ fontWeight: "bold", color: "white", letterSpacing: "1px" }}
+
+        <Typography variant={isMobile ? "h6" : "h5"}sx={{ fontWeight: "bold", color: "white", letterSpacing: "1px" }}
         >
           ADMIN DASHBOARD
         </Typography>
-        <IconButton onClick={()=>handleLogout()} >
-          <LogoutIcon sx={{ color: "white", fontSize: isMobile ? 24 : 28 }} />
+
+         <Box>
+        {/* <IconButton onClick={() => handleProgressPage("/my-progress")} size="small">
+          <TuneIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
+        </IconButton> */}
+        <IconButton onClick={()=>handleLogout("/")} size="small">
+          <LogoutIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
         </IconButton>
+        </Box>
       </Box>
         {/* Title Only */}
         <Box sx={{ mt: 4, textAlign: "center" }}>
@@ -166,6 +193,23 @@ export default function AdminEditEvent({onEdit}) {
             size="small"
             sx={{ mb: 2, backgroundColor: "white", borderRadius: 1 }}
           />
+
+           <Typography sx={{ mb: 1 }}>Category:</Typography>
+              <Select
+               required={true}
+               fullWidth
+               name="category"
+               label="Category"
+               variant="outlined"
+               size="small"
+               value={event.category}
+               onChange={handleChange}
+               sx={{ mb: 2, backgroundColor: "white", borderRadius: 1 }}
+            > 
+                {categories.map(cat =>(
+                  <MenuItem value={cat.uniqCode}>{cat.title}</MenuItem>
+                ))}
+           </Select>
 
           {/* Date */}
           <Typography sx={{ mb: 1.25 }}>Event Date:</Typography>

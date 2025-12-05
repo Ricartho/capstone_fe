@@ -32,9 +32,9 @@ export default function EventDetails({onAttended,attentedList}) {
   const isMobile = useMediaQuery("(max-width:600px)");
 
   //Action from APP component
-  const handleAttented = async (eventId,eventTitle) =>{
+  const handleAttented = async (eventId,eventCategory,eventTitle) =>{
     const currentUserId = sessionStorage.getItem('userId');
-    await onAttended(currentUserId,eventId,eventTitle);
+    await onAttended(currentUserId,eventId,eventCategory,eventTitle);
     window.location.reload(); 
   }
 
@@ -217,7 +217,7 @@ export default function EventDetails({onAttended,attentedList}) {
                 borderRadius: "20px",
                 "&:hover": { backgroundColor: "#e6b400" },
               }}
-              onClick={() => handleAttented(eventToDisplay.id,eventToDisplay.title)}
+              onClick={() => handleAttented(eventToDisplay.id,eventToDisplay.category,eventToDisplay.title)}
             >
             I'm here
             </Button>

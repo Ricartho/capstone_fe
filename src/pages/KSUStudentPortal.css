@@ -1,0 +1,127 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background-color: #000;
+  color: #d4af37;
+}
+
+/* Outer container  */
+.laptop-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 20px;
+  border: 2px solid #d4af37;
+  border-radius: 20px;
+  background-color: #111;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #d4af37;
+}
+
+.logo {
+  height: 60px;
+}
+
+.user-icon {
+  font-size: 2rem;
+}
+
+/* Main Title */
+.section-title {
+  text-align: center;
+  margin: 25px 0;
+  font-size: 1.7rem;
+  font-weight: bold;
+}
+
+/* One row of cards */
+.card-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+/* Individual cards */
+.card {
+  background-color: #f4b400;
+  color: #000;
+  flex: 1;
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.card:hover {
+  background-color: #ffd666;
+}
+
+.icon {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+.card h3 {
+  font-size: 2rem;
+  margin-bottom: 5px;
+}
+
+/* Banner */
+.path-banner {
+  text-align: center;
+  padding: 10px;
+  border: 1px solid #d4af37;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+/* Accordion */
+.accordion-header {
+  width: 100%;
+  background-color: #222;
+  color: #f4b400;
+  border: none;
+  padding: 12px;
+  font-size: 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+}
+
+.accordion-content {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+.accordion-content button {
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #444;
+  padding: 12px;
+  border-radius: 6px;
+  margin: 5px 0;
+  font-size: 1rem;
+  transition: 0.3s;
+}
+
+.accordion-content button:hover {
+  background-color: #f4b400;
+  color: #000;
+}

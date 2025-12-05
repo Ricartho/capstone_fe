@@ -13,20 +13,23 @@ import {
   IconButton,
   MenuItem,
   useMediaQuery,
+  Select,
+  InputLabel
 } from "@mui/material";
 
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import LockIcon from "@mui/icons-material/Lock";
 
-const BASE_URL = process.env.REACT_APP_API_URL || "";
 
-export default function AdminEditAccount({onEdit}) {
+
+
+export default function AdminEditMilestone({onEdit,categories}) {
 
   const isMobile = useMediaQuery("(max-width:600px)");
 
   //The event from the API, served by the loader on App.js
-  const userToEdit = useLoaderData();
-  console.log(userToEdit);
+  const milestoneToEdit = useLoaderData();
+  console.log( milestoneToEdit);
 
   const navigate = useNavigate();
 
@@ -37,14 +40,14 @@ export default function AdminEditAccount({onEdit}) {
   const [error, setError] = useState("");
 
   const [formData, setFormData] = useState({
-    fName: userToEdit.fName,
-    lName: userToEdit.lName,
-    email: userToEdit.email,
-    admin: userToEdit.admin,
+    title: milestoneToEdit.title,
+    criteria: milestoneToEdit.criteria,
+    category: milestoneToEdit.category,
+    description: milestoneToEdit.description,
   });
 
 const handleCancel = () => {
-    navigate("/admin/view-accounts");
+    navigate("/admin/view-milestones");
   };
 
   const handleChange = (e) => {
@@ -57,20 +60,21 @@ const handleCancel = () => {
     // e.preventDefault()
     setError("");
       console.log('user to updatet',formData);
-    if (!formData.fName || !formData.lName || !formData.email) {
+    if (!formData.title || !formData.criteria || !formData.description || !formData.category) {
       setError("Please fill out all required fields.");
       return;
     }
 
     const payload = {
-      fName: formData.fName,
-      lName: formData.lName,
-      email: formData.email,
-      admin: formData.admin,
+      title: formData.title,
+      criteria: formData.criteria,
+      category: formData.category,
+      description: formData.description
+     
     };
 
-    onEdit(userToEdit.id,payload);
-    navigate("/admin/view-accounts");
+    onEdit(milestoneToEdit.id,payload);
+    navigate("/admin/view-milestones");
   };
 
   
@@ -138,7 +142,7 @@ const handleCancel = () => {
       <Box sx={{ textAlign: "center", mt: 4, mb: 2 }}>
         <LockIcon sx={{ fontSize: 40, color: "#FFC629", mb: 1 }} />
         <Typography variant="h6" sx={{ fontWeight: 600 }}>
-          Edit Account
+          Edit Milestone
         </Typography>
       </Box>
 
@@ -182,12 +186,12 @@ const handleCancel = () => {
           </Typography>
         )}
 
-        {/* First Name */}
-        <Typography sx={{ fontSize: 14,mb: 1 }}>First Name</Typography>
+       
+        <Typography sx={{ fontSize: 14,mb: 1 }}>Milestone Name:</Typography>
         <TextField
           required
-          name="fName"
-          value={formData.fName}
+          name="title"
+          value={formData.title}
           onChange={handleChange}
           variant="outlined"
           fullWidth
@@ -196,28 +200,13 @@ const handleCancel = () => {
           }}
           sx={{ mb: 3,}}
         />
-
-        {/* Last Name */}
-        <Typography sx={{ fontSize: 14,mb: 1  }}>Last Name</Typography>
+       
+        <Typography sx={{ fontSize: 14,mb: 1 }}>Milestone criteria:</Typography>
         <TextField
           required
-          name="lName"
-          value={formData.lName}
-          onChange={handleChange}
-          variant="outlined"
-          fullWidth
-          InputProps={{
-            sx: { backgroundColor: "white", borderRadius: 1 },
-          }}
-          sx={{ mb: 3,}}
-        />
-
-        {/* Email */}
-        <Typography sx={{ fontSize: 14,mb: 1 }}>KSU Email</Typography>
-        <TextField
-          required
-          name="email"
-          value={formData.email}
+          name="criteria"
+          type="number"
+          value={formData.criteria}
           onChange={handleChange}
           variant="outlined"
           fullWidth
@@ -227,26 +216,44 @@ const handleCancel = () => {
            sx={{ mb: 3,}}
         />
 
-        {/* Role */}
-        <Typography sx={{ fontSize: 14,mb: 1  }}>Role:</Typography>
+        <Typography sx={{ mb: 1 }}>Category:</Typography>
+        <Select
+            required={true}
+            fullWidth
+            name="category"
+            label="Category"
+            variant="outlined"
+            size="small"
+            value={formData.category}
+            onChange={handleChange}
+            sx={{ mb: 2, backgroundColor: "white", borderRadius: 1 }}
+         > 
+
+        {categories.map(cat =>(
+            <MenuItem value={cat.uniqCode}>{cat.title}</MenuItem>
+        ))}
+        </Select>
+        <Typography sx={{ fontSize: 14,mb: 1 }}>Milestone Goal / Description:</Typography>
         <TextField
           required
-          select
-          name="admin"
-          value={formData.admin}
+          name="description"
+          value={formData.description}
           onChange={handleChange}
           variant="outlined"
+          multiline
+            rows={3}
           fullWidth
           InputProps={{
             sx: { backgroundColor: "white", borderRadius: 1 },
           }}
-          sx={{ mb: 3,}}
-        >
-         <MenuItem value="false">Student</MenuItem>
-         <MenuItem value="true">Faculty/Admin</MenuItem>
-        </TextField>
+           sx={{ mb: 3,}}
+        />
+       
 
-        <Button
+        
+
+
+    <Button
           fullWidth
           variant="contained"
           sx={{
@@ -261,7 +268,7 @@ const handleCancel = () => {
             UPDATE
           </Button>
           
-          <Button
+    <Button
             fullWidth
             variant="contained"
             sx={{ backgroundColor: "#333", color: "white", fontWeight: "bold" }}
@@ -270,6 +277,7 @@ const handleCancel = () => {
             >
             CANCEL
           </Button>
+      
         </form>
       </Box>
     </>

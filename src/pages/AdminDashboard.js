@@ -1,4 +1,4 @@
-import React,{useState}from "react";
+import React,{useState,useEffect}from "react";
 import { useNavigate } from "react-router-dom";
 
 import { format } from 'date-fns';
@@ -14,6 +14,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from '@mui/icons-material/Delete';
 import DownloadIcon from "@mui/icons-material/Download";
 import LogoutIcon from '@mui/icons-material/Logout';
+import TuneIcon from '@mui/icons-material/Tune';
 import {
   Box,
   Typography,
@@ -27,18 +28,15 @@ import {
 
 
 
-export default function AdminDashboard({eventsList,onDelete}) {
-  
-  console.log(eventsList);
-  const navigate = useNavigate();
-  const [search, setSearch] = useState("");
+export default function AdminDashboard({eventsList,onDelete,onRss,onReport}) {
 
-  const isMobile = useMediaQuery("(max-width:600px)");
- const handleLogout = () =>{
-      localStorage.removeItem('userToken');
-      localStorage.removeItem('userId');
-      navigate("/");
-    }
+    console.log(eventsList);
+    const navigate = useNavigate();
+    const [search, setSearch] = useState("");
+
+    const isMobile = useMediaQuery("(max-width:600px)");
+
+   
   const filteredEvents = search
     ? eventsList.filter((e) =>
         e.title.toLowerCase().includes(search.toLowerCase())
@@ -58,7 +56,40 @@ export default function AdminDashboard({eventsList,onDelete}) {
     window.location.reload();
   };
 
-  
+  const handleRss = () =>{
+    onRss();
+    window.location.reload();
+  }
+
+  const handleReport=()=>{
+    onReport();
+    // window.location.reload();
+  }
+
+   //The menu bar actions
+    const handleHomepage = (path) =>{
+      navigate(path);
+      window.location.reload(); 
+    }
+    const handleProgressPage = (path) =>{
+      navigate(path);
+      window.location.reload(); 
+    }
+    const handleLogout = (path) =>{
+      sessionStorage.removeItem('userToken');
+      sessionStorage.removeItem('userId');
+      navigate(path);
+      window.location.reload(); 
+    }
+    //
+     //make sure the user is logged in
+    const checkLogin = () => {
+        if(!sessionStorage.getItem('userToken')){navigate("/");}
+    };
+    
+     useEffect(()=>{
+        //  checkLogin();
+       },[]);
   return (
     <>
       {/* ===== Header Bar ===== */}
@@ -76,18 +107,25 @@ export default function AdminDashboard({eventsList,onDelete}) {
           zIndex: 1000,
         }}
       >
-        <IconButton onClick={()=>navigate("/admin")}>
-          <HomeIcon sx={{ color: "white", fontSize: isMobile ? 24 : 28 }} />
+
+        <IconButton onClick={() => handleHomepage("/admin")} size="small">
+          <HomeIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
         </IconButton>
-        <Typography
-          variant={isMobile ? "h6" : "h5"}
-          sx={{ fontWeight: "bold", color: "white", letterSpacing: "1px" }}
+
+        <Typography variant={isMobile ? "h6" : "h5"}sx={{ fontWeight: "bold", color: "white", letterSpacing: "1px" }}
         >
           ADMIN DASHBOARD
         </Typography>
-        <IconButton onClick={()=>handleLogout()}>
-          <LogoutIcon sx={{ color: "white", fontSize: isMobile ? 24 : 28 }} />
+
+       <Box>
+        {/* <IconButton onClick={() => handleProgressPage("/my-progress")} size="small">
+          <TuneIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
+        </IconButton> */}
+        <IconButton onClick={()=>handleLogout("/")} size="small">
+          <LogoutIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
         </IconButton>
+        </Box>
+        
       </Box>
 
       {/* ===== Lock Icon ===== */}
@@ -115,7 +153,19 @@ export default function AdminDashboard({eventsList,onDelete}) {
       </Box>
 
       {/* ===== New Event Button ===== */}
-      <Button
+      <Box
+      sx={{
+        display:"flex",
+        flexDirection:"row",
+        alignItems:"center",
+        justifyContent:"space-between",
+        maxWidth:"300px",
+        width:"100%",
+        mt:2,
+      }}
+      >
+        <Box>
+          <Button
         onClick={handleNewEvent}
         variant="contained"
         sx={{
@@ -130,6 +180,29 @@ export default function AdminDashboard({eventsList,onDelete}) {
       >
         NEW EVENT
       </Button>
+        </Box>
+        <Box>
+           <Button
+        onClick={handleRss}
+        variant="contained"
+        sx={{
+          mt: 3,
+          backgroundColor: "#FFC629",
+          color: "#000",
+          fontWeight: "bold",
+          "&:hover": { backgroundColor: "#e6b400" },
+          borderRadius: "8px",
+          px: 4,
+        }}
+      >
+        RSS
+      </Button>
+        </Box>
+      
+        
+     
+      </Box>
+     
 
       {/* ===== Event List ===== */}
       <Box
@@ -180,7 +253,7 @@ export default function AdminDashboard({eventsList,onDelete}) {
               <IconButton sx={{ color: "#FFC629" }} onClick={()=>handleDelete(event._id)}>
                 <DeleteIcon />
               </IconButton>
-              <IconButton sx={{ color: "#FFC629" }}>
+              <IconButton sx={{ color: "#FFC629" }} onClick={()=>handleReport(event._id)}>
                 <DownloadIcon />
               </IconButton>
             </Box>
@@ -205,20 +278,6 @@ export default function AdminDashboard({eventsList,onDelete}) {
       >
         <Button
           variant="contained"
-          sx={{
-            backgroundColor: "#FFC629",
-            color: "#000",
-            fontWeight: "bold",
-            "&:hover": { backgroundColor: "#e6b400" },
-            borderRadius: "8px",
-            px: 4,
-          }}
-        >
-          DOWNLOAD ALL ATTENDANCE
-        </Button>
-
-        <Button
-          variant="contained"
          onClick={()=>navigate("/admin/view-accounts")}
           sx={{
             backgroundColor: "#FFC629",
@@ -229,8 +288,38 @@ export default function AdminDashboard({eventsList,onDelete}) {
             px: 4,
           }}
         >
-          VIEW ACCOUNTS
+          MANAGE ACCOUNTS
         </Button>
+        <Button
+          variant="contained"
+         onClick={()=>navigate("/admin/view-category")}
+          sx={{
+            backgroundColor: "#FFC629",
+            color: "#000",
+            fontWeight: "bold",
+            "&:hover": { backgroundColor: "#e6b400" },
+            borderRadius: "8px",
+            px: 4,
+          }}
+        >
+          MANAGE CATEGORIES
+        </Button>
+        <Button
+        onClick={()=>navigate("/admin/view-milestones")}
+          variant="contained"
+          sx={{
+            backgroundColor: "#FFC629",
+            color: "#000",
+            fontWeight: "bold",
+            "&:hover": { backgroundColor: "#e6b400" },
+            borderRadius: "8px",
+            px: 4,
+          }}
+        >
+          MANAGE MILESTONES
+        </Button>
+
+        
       </Box>
 
       {/* ===== Stats Section ===== */}

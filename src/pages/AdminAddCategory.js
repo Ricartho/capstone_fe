@@ -18,41 +18,41 @@ import {
   IconButton,
   useMediaQuery,
   Paper,
-  Select,
-  MenuItem
 } from "@mui/material";
 
-export default function AdminNewEvent({categories,onAddEvent}) {
+export default function AdminAddCategory({onAddCategory}) {
 
   const isMobile = useMediaQuery("(max-width:600px)");
   const navigate = useNavigate();
 
   const [error, setError] = useState("");
 
-  const [event, setEvent] = useState({
+  const [category, setCategory] = useState({
     title: "",
-    eventDate: dayjs(),
-    eventTimeStart: dayjs(),
-    eventTimeEnd: dayjs().add(1, "hour"), 
-    location: "",
+    uniqCode: "",
     description: "",
-    category:""
   });
  
-  const handleCancel = () => navigate("/admin");
+  const handleCancel = () => navigate("/admin/view-category");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setEvent((prev) => ({ ...prev, [name]: value }));
+    setCategory((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     
-    console.log("Event to submit:", event);
-    //e.preventDefault();
-    if(event.title != null && event.location != null && event.description != null && event.category != null){
-        onAddEvent(event);
-        navigate("/admin");
+    console.log("Event to submit:", category);
+    e.preventDefault();
+    if(category.title != null && category.uniqCode != null && category.description != null){
+       const action =  await onAddCategory(category);
+       console.log(action);
+       if(!action.id){
+          setError("Error while creating category, please verify the UniqCode and try again");
+       }else{
+        navigate("/admin/view-category");
+       }
+        
     }else{
       setError("Please complete all required fields.");
       return;
@@ -125,7 +125,7 @@ export default function AdminNewEvent({categories,onAddEvent}) {
         <Box sx={{ textAlign: "center", mt: 5 }}>
           <LockIcon sx={{ fontSize: 50, color: "#FFC629", mb: 1 }} />
           <Typography variant={isMobile ? "h6" : "h5"} sx={{ fontWeight: 600 }}>
-            Create New Event
+            Create New Category
           </Typography>
         </Box>
 
@@ -175,12 +175,12 @@ export default function AdminNewEvent({categories,onAddEvent}) {
          
           
           {/* ===== Event Name ===== */}
-          <Typography sx={{ mb: 1 }}>Event Name:</Typography>
+          <Typography sx={{ mb: 1 }}>Category Name:</Typography>
           <TextField
-            required={true}
+             required={true}
             fullWidth
             name="title"
-            value={event.title}
+            value={category.title}
             onChange={handleChange}
             variant="outlined"
             size="small"
@@ -188,71 +188,15 @@ export default function AdminNewEvent({categories,onAddEvent}) {
             sx={{ mb: 2, backgroundColor: "white", borderRadius: 1 }}
           />
 
-           <Typography sx={{ mb: 1 }}>Category:</Typography>
-           <Select
-              required={true}
-              fullWidth
-              name="category"
-              label="Category"
-              variant="outlined"
-              size="small"
-              value={event.category}
-              onChange={handleChange}
-              sx={{ mb: 2, backgroundColor: "white", borderRadius: 1 }}
-            > 
-             {categories.map(cat =>(
-                <MenuItem value={cat.uniqCode}>{cat.title}</MenuItem>
-                ))}
-          </Select>
-
-          {/* ===== Event Date ===== */}
-          <Typography sx={{ mb: 1 }}>Event Date:</Typography>
-          <Paper
-            elevation={2}
-            sx={{ mb: 2, p: 1, borderRadius: 1.5, backgroundColor: "white" }}
-          >
-            <DatePicker
-              value={event.eventDate}
-              onChange={(newValue) =>
-                setEvent((prev) => ({ ...prev, eventDate: newValue }))
-              }
-              slotProps={{ textField: { size: "small", fullWidth: true } }}
-            />
-          </Paper>
-
-          {/* ===== Event Time ===== */}
-          <Typography sx={{ mb: 1 }}>Event Time:</Typography>
-          <Box sx={{ display: "flex", flexDirection:"row",gap: 2, mb: 2 }}>
-            {/* Start Time */}
-            <Paper elevation={2} sx={{ p: 1, flex: 1, backgroundColor: "white", width:"40%"}}>
-              <TimePicker
-                value={event.eventTimeStart}
-                onChange={(newValue) =>
-                  setEvent((prev) => ({ ...prev, eventTimeStart: newValue }))
-                }
-                slotProps={{ textField: { size: "small", fullWidth: true } }}
-              />
-            </Paper>
-
-            {/* End Time */}
-            <Paper elevation={2} sx={{ p: 1, flex: 1, backgroundColor: "white",width:"40%"}}>
-              <TimePicker
-                value={event.eventTimeEnd}
-                onChange={(newValue) =>
-                  setEvent((prev) => ({ ...prev, eventTimeEnd: newValue }))
-                }
-                slotProps={{ textField: { size: "small", fullWidth: true } }}
-              />
-            </Paper>
-          </Box>
+    
 
           {/* ===== Location ===== */}
-          <Typography sx={{ mb: 1 }}>Location:</Typography>
+          <Typography sx={{ mb: 1 }}>Category Code:</Typography>
           <TextField
             required={true}
             fullWidth
-            name="location"
-            value={event.location}
+            name="uniqCode"
+            value={category.uniqCode}
             onChange={handleChange}
             variant="outlined"
             size="small"
@@ -265,7 +209,7 @@ export default function AdminNewEvent({categories,onAddEvent}) {
             fullWidth
             required={true}
             name="description"
-            value={event.description}
+            value={category.description}
             onChange={handleChange}
             multiline
             rows={3}
@@ -287,7 +231,7 @@ export default function AdminNewEvent({categories,onAddEvent}) {
             }}
            type="submit"
           >
-            Create Event
+            Create Category
           </Button>
 
           <Button

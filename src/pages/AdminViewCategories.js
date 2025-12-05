@@ -21,20 +21,20 @@ import LogoutIcon from '@mui/icons-material/Logout';
 
 
 
-export default function AdminViewAccounts({usersList,onDelete}) {
-
+export default function AdminViewCategories({categoriesList,onDelete}) {
+    console.log(categoriesList);
    const isMobile = useMediaQuery("(max-width:600px)");
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [fadeIn] = useState(true);
 
  
-  const filteredUsers = usersList.filter((u) =>
-    u.lName.toLowerCase().includes(search.toLowerCase())
+  const filteredCategories = categoriesList.filter((u) =>
+    u.title.toLowerCase().includes(search.toLowerCase())
   );
  
   const handleEdit = (id) => {
-    navigate(`/admin/edit-account/${id}`);
+    navigate(`/admin/edit-category/${id}`);
   };
   const handleDelete = (id) => {
     onDelete(id);
@@ -102,7 +102,7 @@ export default function AdminViewAccounts({usersList,onDelete}) {
         <Box sx={{ textAlign: "center", mt: 4, mb: 3 }}>
           <LockIcon sx={{ fontSize: 40, color: "#FFC629", mb: 1 }} />
           <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            View Accounts
+            View Categories
           </Typography>
         </Box>
       </Fade>
@@ -136,13 +136,13 @@ export default function AdminViewAccounts({usersList,onDelete}) {
             borderRadius: "20px",
             "&:hover": { backgroundColor: "#e6b400" },
           }}
-          onClick={() => navigate("/admin/add-account")}
+          onClick={() => navigate("/admin/new-category")}
         >
-          ADD ACCOUNT
+          ADD CATEGORY
         </Button>
       </Box>
 
-      {/* ===== Account Cards ===== */}
+      {/* ===== Category Cards ===== */}
       <Paper
         sx={{
           width: "90%",
@@ -155,9 +155,9 @@ export default function AdminViewAccounts({usersList,onDelete}) {
           mb: 5,
         }}
       >
-        {filteredUsers.map((user) => (
+        {filteredCategories.map((category) => (
           <Box
-            key={user._id}
+            key={category._id}
             sx={{
               display: "flex",
               alignItems: "center",
@@ -180,30 +180,24 @@ export default function AdminViewAccounts({usersList,onDelete}) {
                 textAlign: "center",
               }}
             >
-              {user.lName.toUpperCase()} {user.fName.toUpperCase()}
+              {category.title.toUpperCase()} 
             </Typography>
 
             <Box sx={{ display: "flex", gap: 1, ml: 1 }}>
               <IconButton
                 size="small"
                 sx={{ color: "#FFC629" }}
-                onClick={() => handleEdit(user._id)}
+                onClick={() => handleEdit(category._id)}
               >
                 <EditIcon fontSize="small" />
               </IconButton>
 
-              <IconButton
-                size="small"
-                sx={{ color: "#FFC629" }}
-                onClick={() => window.open("/forgot-password","_blank")}
-              >
-                <VpnKeyIcon fontSize="small" />
-              </IconButton>
+              
 
               <IconButton
                 size="small"
                 sx={{ color: "#FFC629" }}
-                onClick={() => handleDelete(user._id)}
+                onClick={() => handleDelete(category._id)}
               >
                 <DeleteIcon fontSize="small" />
               </IconButton>
@@ -238,7 +232,7 @@ export default function AdminViewAccounts({usersList,onDelete}) {
         }}
       >
         <Typography variant="body1" sx={{ color: "#FFC629" }}>
-          Total Users: {usersList.length}
+          Total Users: {categoriesList.length}
         </Typography>
         <Typography variant="body1" sx={{ color: "#FFC629" }}>
           Total Check-ins: 52(Static)

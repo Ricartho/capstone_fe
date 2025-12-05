@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -31,27 +31,44 @@ console.log("Welcome");
     lName: "",
     email: "",
     admin: "false",
+    password:"",
+    confirmPassword:"",
   });
 console.log(formData);
   const [error, setError] = useState("");
+  //REGEX to ensure email format
+   const myRegex = /[A-Za-z0-9]+@[A-Za-z]+\.kennesaw\.edu/;
 
+   
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-const handleLogout = () =>{
-      localStorage.removeItem('userToken');
-      localStorage.removeItem('userId');
-      navigate("/");
-    }
-  const handleSubmit = (e) => {
-    // e.preventDefault();
+
+  const handleSubmit = async(e) => {
+    e.preventDefault();
     setError("");
     console.log('user to submit',formData);
 
-    if(formData.fName !== "" && formData.lName !== "" && formData.admin !== "" && formData.email !== ""){
-        onAddUser(formData);
-        navigate("/admin/view-accounts");
+      if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }else{
+        if(!myRegex.test(formData.email)){
+      setError("Only KSU emails are accepted,make sure the format is kennesaw.edu");
+      return;
+     }
+    }
+
+    if(formData.fName !== "" && formData.lName !== "" && formData.admin !== "" && formData.email !== "" && formData.password !==""){
+        const action = await onAddUser(formData);
+        console.log(action);
+        if(!action.id){
+          setError("Error while creating account, please verify and try again");
+        }else{
+           navigate("/admin/view-accounts");
+        }
+       
     }else{
       setError("Please complete all required fields.");
       return;
@@ -62,6 +79,31 @@ const handleLogout = () =>{
   const handleCancel = () => {
     navigate("/admin/view-accounts");
   };
+
+   //The menu bar actions
+      const handleHomepage = (path) =>{
+        navigate(path);
+        window.location.reload(); 
+      }
+      const handleProgressPage = (path) =>{
+        navigate(path);
+        window.location.reload(); 
+      }
+      const handleLogout = (path) =>{
+        sessionStorage.removeItem('userToken');
+        sessionStorage.removeItem('userId');
+        navigate(path);
+        window.location.reload(); 
+      }
+      //
+       //make sure the user is logged in
+      const checkLogin = () => {
+          if(!sessionStorage.getItem('userToken')){navigate("/");}
+      };
+       
+       useEffect(()=>{
+          //  checkLogin();
+         },[]);
 
   return (
     <>
@@ -80,18 +122,23 @@ const handleLogout = () =>{
               zIndex: 1000,
             }}
           >
-            <IconButton onClick={()=>navigate("/admin")}>
-              <HomeIcon sx={{ color: "white", fontSize: isMobile ? 24 : 28 }} />
+             <IconButton onClick={() => handleHomepage("/admin")} size="small">
+              <HomeIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
             </IconButton>
-            <Typography
-              variant={isMobile ? "h6" : "h5"}
-              sx={{ fontWeight: "bold", color: "white", letterSpacing: "1px" }}
+
+            <Typography variant={isMobile ? "h6" : "h5"}sx={{ fontWeight: "bold", color: "white", letterSpacing: "1px" }}
             >
               ADMIN DASHBOARD
             </Typography>
-            <IconButton onClick={()=>handleLogout()}>
-              <LogoutIcon sx={{ color: "white", fontSize: isMobile ? 24 : 28 }} />
-            </IconButton>
+
+        <Box>
+          {/* <IconButton onClick={() => handleProgressPage("/my-progress")} size="small">
+            <TuneIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
+          </IconButton> */}
+          <IconButton onClick={()=>handleLogout("/")} size="small">
+            <LogoutIcon sx={{ color: "white", fontSize: isMobile ? 22 : 26 }} />
+          </IconButton>
+        </Box>
           </Box>
 
       {/* ===== Page Title ===== */}
@@ -142,7 +189,7 @@ const handleLogout = () =>{
         )}
 
         {/* First Name */}
-        <Typography sx={{ fontSize: 14, mb: 1 }}>First Name</Typography>
+        <Typography sx={{ fontSize: 14, mb: 1 }}>First Name:</Typography>
         <TextField
           required
           name="fName"
@@ -156,7 +203,7 @@ const handleLogout = () =>{
         />
 
         {/* Last Name */}
-        <Typography sx={{ fontSize: 14,mb: 1  }}>Last Name</Typography>
+        <Typography sx={{ fontSize: 14,mb: 1  }}>Last Name:</Typography>
         <TextField
           required
           name="lName"
@@ -170,7 +217,7 @@ const handleLogout = () =>{
         />
 
         {/* Email */}
-        <Typography sx={{ fontSize: 14,mb: 1 }}>KSU Email</Typography>
+        <Typography sx={{ fontSize: 14,mb: 1 }}>KSU Email:</Typography>
         <TextField
           required
           name="email"
@@ -182,6 +229,33 @@ const handleLogout = () =>{
           InputProps={{ sx: { backgroundColor: "white", borderRadius: 1 } }}
           sx={{ mb: 3,}}
         />
+
+        <Typography sx={{ fontSize: 14,mb: 1 }}>Password:</Typography>
+        <TextField
+          required
+          name="password"
+          type="password"
+          value={formData.password}
+          onChange={handleChange}
+          variant="outlined"
+          fullWidth
+          InputProps={{ sx: { backgroundColor: "white", borderRadius: 1 } }}
+          sx={{ mb: 3,}}
+        />
+
+        <Typography sx={{ fontSize: 14,mb: 1 }}>Confirm Password:</Typography>
+        <TextField
+          required
+          name="confirmPassword"
+          type="password"
+          value={formData.confirmPassword}
+          onChange={handleChange}
+          variant="outlined"
+          fullWidth
+          InputProps={{ sx: { backgroundColor: "white", borderRadius: 1 } }}
+          sx={{ mb: 3,}}
+        />
+        
 
         {/* Role */}
         <Typography sx={{ fontSize: 14,mb: 1 }}>Role:</Typography>
